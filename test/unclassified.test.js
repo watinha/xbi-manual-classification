@@ -105,7 +105,7 @@ function get_rows (n) {
 ${data_raw.join('\n')}`];
 }
 
-describe('unclassified', () => {
+describe('/unclassified', () => {
 
   beforeEach(() => {
     jest.mock('fs');
@@ -118,7 +118,7 @@ describe('unclassified', () => {
     fs.promises.readFile = jest.fn();
     fs.promises.readFile.mockResolvedValue(arff);
 
-    const resp = await request(app).get('/unclassified')
+    const resp = await request(app).get('/unclassified?uncached=1')
                                    .expect('Content-type', /json/)
                                    .expect(200);
 
@@ -134,7 +134,7 @@ describe('unclassified', () => {
     fs.promises.readFile = jest.fn();
     fs.promises.readFile.mockResolvedValue(arff);
 
-    const resp = await request(app).get('/unclassified')
+    const resp = await request(app).get('/unclassified?uncached=1')
                                    .expect('Content-type', /json/)
                                    .expect(200);
 
@@ -150,7 +150,7 @@ describe('unclassified', () => {
     fs.promises.readFile = jest.fn();
     fs.promises.readFile.mockResolvedValue(arff);
 
-    const resp = await request(app).get('/unclassified')
+    const resp = await request(app).get('/unclassified?uncached=1')
                                    .expect('Content-type', /json/)
                                    .expect(200);
 
@@ -166,7 +166,7 @@ describe('unclassified', () => {
     fs.promises.readFile = jest.fn();
     fs.promises.readFile.mockResolvedValue(arff);
 
-    const resp = await request(app).get('/unclassified/1')
+    const resp = await request(app).get('/unclassified/1?uncached=1')
                                    .expect('Content-type', /json/)
                                    .expect(200);
 
@@ -182,11 +182,13 @@ describe('unclassified', () => {
     fs.promises.readFile = jest.fn();
     fs.promises.readFile.mockResolvedValue(arff);
 
-    const resp = await request(app).get('/unclassified/2')
+    const resp = await request(app).get('/unclassified/2?uncached=1')
                                    .expect('Content-type', /json/)
                                    .expect(200);
 
     expect(resp.body).toEqual({ ...data[2] });
+    expect(fs.promises.readFile).toHaveBeenCalledWith(
+      './data/dataset.unclassified.arff', { encoding: 'utf8' });
   });
 
   it('/unclassified/3 should return 404', async () => {
@@ -196,11 +198,62 @@ describe('unclassified', () => {
     fs.promises.readFile = jest.fn();
     fs.promises.readFile.mockResolvedValue(arff);
 
-    const resp = await request(app).get('/unclassified/3')
+    const resp = await request(app).get('/unclassified/3?uncached=1')
                                    .expect('Content-type', /json/)
                                    .expect(404);
 
     expect(fs.promises.readFile).toHaveBeenCalledWith(
       './data/dataset.unclassified.arff', { encoding: 'utf8' });
   });
+
+  describe('/uncassified with cache', () => {
+
+    it('/unclassified should return a three rows', async () => {
+      const [attributes, data, arff] = get_rows(3);
+
+      fs.promises = {};
+      fs.promises.readFile = jest.fn();
+      fs.promises.readFile.mockResolvedValue(arff);
+
+      const resp = await request(app).get('/unclassified?uncached=1')
+                                     .expect('Content-type', /json/)
+                                     .expect(200);
+
+      expect(resp.body).toEqual({ length: 3 });
+      expect(fs.promises.readFile).toHaveBeenCalledWith(
+        './data/dataset.unclassified.arff', { encoding: 'utf8' });
+    });
+
+    it('/unclassified/2 should return data row with cache', async () => {
+      const [attributes, data, arff] = get_rows(3);
+
+      fs.promises = {};
+      fs.promises.readFile = jest.fn();
+      fs.promises.readFile.mockResolvedValue(arff);
+
+      const resp = await request(app).get('/unclassified/2')
+                                     .expect('Content-type', /json/)
+                                     .expect(200);
+
+      expect(resp.body).toEqual({ ...data[2] });
+      expect(fs.promises.readFile).not.toHaveBeenCalled();
+    });
+
+    it('/unclassified should return a three rows with cache', async () => {
+      const [attributes, data, arff] = get_rows(3);
+
+      fs.promises = {};
+      fs.promises.readFile = jest.fn();
+      fs.promises.readFile.mockResolvedValue(arff);
+
+      const resp = await request(app).get('/unclassified')
+                                     .expect('Content-type', /json/)
+                                     .expect(200);
+
+      expect(resp.body).toEqual({ length: 3 });
+      expect(fs.promises.readFile).not.toHaveBeenCalled();
+    });
+
+  });
+
 });
