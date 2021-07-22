@@ -1,33 +1,27 @@
 const express = require('express'),
       router = express.Router(),
-      fs = require('fs'),
-      arff = require('arff');
-let data = -1;
+      { load } = require('../model/dataset_loader');
+
+let dataset_cache = -1;
 
 router.get('/', async (req, res) => {
   const { uncached } = req.query;
 
-  if (data === -1 || uncached === '1') {
-    const raw_data = await fs.promises.readFile(
-      './data/dataset.unclassified.arff', { encoding: 'utf8' });
-    data = arff.parse(raw_data);
-  }
+  if (dataset_cache === -1 || uncached === '1')
+    dataset_cache = await load('./data/dataset.unclassified.arff');
 
-  res.json({ length: data['data'].length });
+  res.json({ length: dataset_cache['data'].length });
 });
 
 router.get('/:id', async (req, res) => {
   const { uncached } = req.query,
         { id } = req.params;
 
-  if (data === -1 || uncached === '1') {
-    const raw_data = await fs.promises.readFile(
-      './data/dataset.unclassified.arff', { encoding: 'utf8' });
-    data = arff.parse(raw_data);
-  }
+  if (dataset_cache === -1 || uncached === '1')
+    dataset_cache = await load('./data/dataset.unclassified.arff');
 
-  if (parseInt(id) < data['data'].length)
-    res.json({ ...data['data'][parseInt(req.params.id)] });
+  if (parseInt(id) < dataset_cache['data'].length)
+    res.json({ ...dataset_cache['data'][parseInt(req.params.id)] });
   else
     res.status(404).json({});
 });
