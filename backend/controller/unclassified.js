@@ -1,27 +1,23 @@
 const express = require('express'),
       router = express.Router(),
-      { load } = require('../model/dataset_loader');
-
-let dataset_cache = -1;
+      dataset = require('../model/dataset');
 
 router.get('/', async (req, res) => {
   const { uncached } = req.query;
 
-  if (dataset_cache === -1 || uncached === '1')
-    dataset_cache = await load('./data/dataset.unclassified.arff');
+  len = await dataset.unclassified_length(uncached);
 
-  res.json({ length: dataset_cache['data'].length });
+  res.json({ length: len });
 });
 
 router.get('/:id', async (req, res) => {
   const { uncached } = req.query,
         { id } = req.params;
 
-  if (dataset_cache === -1 || uncached === '1')
-    dataset_cache = await load('./data/dataset.unclassified.arff');
+  let row = await dataset.get_unclassified(parseInt(id), uncached);
 
-  if (parseInt(id) < dataset_cache['data'].length)
-    res.json({ ...dataset_cache['data'][parseInt(req.params.id)] });
+  if (row)
+    res.json(row);
   else
     res.status(404).json({});
 });
