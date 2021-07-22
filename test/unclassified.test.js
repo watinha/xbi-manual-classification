@@ -1,5 +1,5 @@
 const request = require('supertest'),
-      app = require('../server');
+      app = require('../backend/app');
 
 let fs = require('fs');
 
