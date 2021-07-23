@@ -30,12 +30,19 @@ function get_rows (n) {
         { 'name': 'targetDeviceWidth', 'type': 'numeric' }, { 'name': 'baseViewportWidth', 'type': 'numeric' },
         { 'name': 'targetViewportWidth', 'type': 'numeric' }, { 'name': 'xpath', 'type': 'string' },
         { 'name': 'baseXpath', 'type': 'string' }, { 'name': 'targetXpath', 'type': 'string' },
-        { 'name': 'phash', 'type': 'numeric' }, { 'name': 'basePreviousSiblingLeft', 'type': 'numeric' },
-        { 'name': 'targetPreviousSiblingLeft', 'type': 'numeric' }, { 'name': 'basePreviousSiblingTop', 'type': 'numeric' },
-        { 'name': 'targetNextSiblingLeft', 'type': 'numeric' }, { 'name': 'baseNextSiblingTop', 'type': 'numeric' },
-        { 'name': 'targetNextSiblingTop', 'type': 'numeric' }, { 'name': 'baseTextNodes', 'type': 'numeric' },
-        { 'name': 'targetTextNodes', 'type': 'numeric' }, { 'name': 'baseFontFamily', 'type': 'string' },
-        { 'name': 'targetFontFamily', 'type': 'string' }
+        { 'name': 'phash', 'type': 'numeric' },
+        { 'name': 'basePreviousSiblingLeft', 'type': 'numeric' },
+        { 'name': 'targetPreviousSiblingLeft', 'type': 'numeric' },
+        { 'name': 'basePreviousSiblingTop', 'type': 'numeric' },
+        { 'name': 'targetPreviousSiblingTop', 'type': 'numeric' },
+        { 'name': 'baseNextSiblingLeft', 'type': 'numeric' },
+        { 'name': 'targetNextSiblingLeft', 'type': 'numeric' },
+        { 'name': 'baseNextSiblingTop', 'type': 'numeric' },
+        { 'name': 'targetNextSiblingTop', 'type': 'numeric' },
+        { 'name': 'baseTextNodes', 'type': 'numeric' },
+        { 'name': 'targetTextNodes', 'type': 'numeric' },
+        { 'name': 'baseFontFamily', 'type': 'string' },
+        { 'name': 'targetFontFamily', 'type': 'string' },
       ];
 
   data_raw.forEach((value) => {
@@ -94,6 +101,8 @@ function get_rows (n) {
 @ATTRIBUTE basePreviousSiblingLeft NUMERIC
 @ATTRIBUTE targetPreviousSiblingLeft NUMERIC
 @ATTRIBUTE basePreviousSiblingTop NUMERIC
+@ATTRIBUTE targetPreviousSiblingTop NUMERIC
+@ATTRIBUTE baseNextSiblingLeft NUMERIC
 @ATTRIBUTE targetNextSiblingLeft NUMERIC
 @ATTRIBUTE baseNextSiblingTop NUMERIC
 @ATTRIBUTE targetNextSiblingTop NUMERIC
@@ -155,6 +164,20 @@ describe('/unclassified', () => {
                                    .expect(200);
 
     expect(resp.body).toEqual({ length: 0 });
+    expect(fs.promises.readFile).toHaveBeenCalledWith(
+      './data/dataset.unclassified.arff', { encoding: 'utf8' });
+  });
+
+  it('/unclassified should return -1 if no file is found', async () => {
+    fs.promises = {};
+    fs.promises.readFile = jest.fn();
+    fs.promises.readFile.mockRejectedValue('File not found!!! (Simulation)');
+
+    const resp = await request(app).get('/unclassified?uncached=1')
+                                   .expect('Content-type', /json/)
+                                   .expect(200);
+
+    expect(resp.body).toEqual({ length: -1 });
     expect(fs.promises.readFile).toHaveBeenCalledWith(
       './data/dataset.unclassified.arff', { encoding: 'utf8' });
   });

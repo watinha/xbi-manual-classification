@@ -5,9 +5,11 @@ const express = require('express'),
 router.get('/', async (req, res) => {
   const { uncached } = req.query;
 
-  len = await dataset.unclassified_length(uncached);
-
-  res.json({ length: len });
+  try {
+    res.json({ length: await dataset.unclassified_length(uncached) });
+  } catch (e) {
+    res.json({ length: -1 });
+  }
 });
 
 router.get('/:id', async (req, res) => {
