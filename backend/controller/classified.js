@@ -13,4 +13,19 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.post('/', async (req, res) => {
+  const { action, data } = req.body;
+
+  switch (action) {
+    case 'add':
+      dataset.add_classified(data);
+      res.status(201).json({ message: 'success! yay' });
+      break;
+    case 'save':
+      dataset.save_classified();
+      res.status(200).json({ message: 'Arff file generated!!!' });
+      break;
+  }
+});
+
 module.exports = router;

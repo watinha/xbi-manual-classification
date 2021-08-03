@@ -38,6 +38,15 @@ const fs = require('fs'),
     classified_length: async (uncached) => {
       await load_classified(uncached);
       return cache['classified']['data'].length;
+    },
+
+    add_classified: (row) => {
+      cache['classified']['data'].push(row);
+    },
+
+    save_classified: async () => {
+      return fs.promises.writeFile(classified_filename,
+        arff.format(cache['classified']));
     }
 
   };

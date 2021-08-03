@@ -5,9 +5,9 @@ let fs = require('fs');
 
 function get_rows (n) {
   const rows = [
-    'http://192.168.0.13:8080/59/index.html,1281,DIV,1,131,"iOS 14.5 - Safari -- iOS 14.5 - iPhone 12","Android null - Chrome -- Android API28 - Pixel",null,null,3.0,3.5,null,null,168,15,11953,11816,31,29,198,178,0,0,11657,11528,0.0,0.0,1170,1440,390,412,/body[2]/div[8]/div[1]/div[8]/div[3]/div[16],/body[2]/div[8]/div[1]/div[8]/div[3]/div[16],/body[2]/div[8]/div[1]/div[8]/div[3]/div[16],0.0,15,217,11953,11771,15,198,11999,11816,0,0,"Open Sans","Open Sans",0,1',
-    'http://192.168.0.13:8080/59/index.html,739,DIV,1,140,"iOS 14.5 - Safari -- iOS 14.5 - iPhone 12","Android null - Chrome -- Android API28 - Pixel",null,null,3.0,3.5,null,null,15,15,6210,6122,18,17,260,282,15,15,6210,6122,0.0,0.0,1170,1440,390,412,/body[2]/div[8]/div[1]/div[4]/div[1]/ul[1]/li[30]/div[2]/div[1],/body[2]/div[8]/div[1]/div[4]/div[1]/ul[1]/li[30]/div[2]/div[1],/body[2]/div[8]/div[1]/div[4]/div[1]/ul[1]/li[30]/div[2]/div[1],0.0,285,307,6210,6122,15,15,6228,6139,2,2,"Open Sans","Open Sans",1,0',
-    'http://192.168.0.13:8080/26/index.html,386,DIV,1,61,"iOS 14.5 - Safari -- iOS 14.5 - iPhone 12","iOS 14.5 - Safari -- iOS 14.5 - iPhone 12 mini",null,null,3.0,3.0,null,null,48,48,30820,35202,234,234,334,319,48,48,30820,35202,0.0,0.0,1170,1125,390,375,/body[2]/main[5]/ul[6]/li[20]/div[1],/body[2]/main[5]/ul[6]/li[20]/div[1],/body[2]/main[5]/ul[6]/li[20]/div[1],0.0,48,48,29986,34138,48,48,31123,35505,2,2,-webkit-standard,-webkit-standard,0,0'
+    '"http://192.168.0.13:8080/59/index.html",1281,"DIV",1,131,"iOS 14.5 - Safari -- iOS 14.5 - iPhone 12","Android null - Chrome -- Android API28 - Pixel","null","null",3,3.5,"null","null",168,15,11953,11816,31,29,198,178,0,0,11657,11528,0,0,1170,1440,390,412,"/body[2]/div[8]/div[1]/div[8]/div[3]/div[16]","/body[2]/div[8]/div[1]/div[8]/div[3]/div[16]","/body[2]/div[8]/div[1]/div[8]/div[3]/div[16]",0,15,217,11953,11771,15,198,11999,11816,0,0,"Open Sans","Open Sans","0","1"',
+    '"http://192.168.0.13:8080/59/index.html",739,"DIV",1,140,"iOS 14.5 - Safari -- iOS 14.5 - iPhone 12","Android null - Chrome -- Android API28 - Pixel","null","null",3,3.5,"null","null",15,15,6210,6122,18,17,260,282,15,15,6210,6122,0,0,1170,1440,390,412,"/body[2]/div[8]/div[1]/div[4]/div[1]/ul[1]/li[30]/div[2]/div[1]","/body[2]/div[8]/div[1]/div[4]/div[1]/ul[1]/li[30]/div[2]/div[1]","/body[2]/div[8]/div[1]/div[4]/div[1]/ul[1]/li[30]/div[2]/div[1]",0,285,307,6210,6122,15,15,6228,6139,2,2,"Open Sans","Open Sans","1","0"',
+    '"http://192.168.0.13:8080/26/index.html",386,"DIV",1,61,"iOS 14.5 - Safari -- iOS 14.5 - iPhone 12","iOS 14.5 - Safari -- iOS 14.5 - iPhone 12 mini","null","null",3,3,"null","null",48,48,30820,35202,234,234,334,319,48,48,30820,35202,0,0,1170,1125,390,375,"/body[2]/main[5]/ul[6]/li[20]/div[1]","/body[2]/main[5]/ul[6]/li[20]/div[1]","/body[2]/main[5]/ul[6]/li[20]/div[1]",0,48,48,29986,34138,48,48,31123,35505,2,2,"-webkit-standard","-webkit-standard","0","0"'
   ];
 
   let data_raw = rows.filter((cur, index) => index < n),
@@ -43,8 +43,8 @@ function get_rows (n) {
         { 'name': 'targetTextNodes', 'type': 'numeric' },
         { 'name': 'baseFontFamily', 'type': 'string' },
         { 'name': 'targetFontFamily', 'type': 'string' },
+        { 'name': 'external', 'type': 'enum', 'values': [1, 0] },
         { 'name': 'internal', 'type': 'enum', 'values': [1, 0] },
-        { 'name': 'external', 'type': 'enum', 'values': [1, 0] }
       ];
 
   data_raw.forEach((value) => {
@@ -60,64 +60,66 @@ function get_rows (n) {
       if (attribute['type'] === 'string')
         row[attribute['name']] = raw_row[ind].replace(/"/g, '');
       if (attribute['type'] === 'enum')
-        row[attribute['name']] = raw_row[ind];
+        row[attribute['name']] = raw_row[ind].replace(/"/g, '');
     });
     data.push(row);
   });
 
-  return [attributes, data, `
-@RELATION browserninja.website
-@ATTRIBUTE URL STRING
-@ATTRIBUTE id NUMERIC
-@ATTRIBUTE tagName STRING
-@ATTRIBUTE childsNumber NUMERIC
-@ATTRIBUTE textLength NUMERIC
-@ATTRIBUTE basePlatform STRING
-@ATTRIBUTE targetPlatform STRING
-@ATTRIBUTE baseBrowser STRING
-@ATTRIBUTE targetBrowser STRING
-@ATTRIBUTE baseDPI NUMERIC
-@ATTRIBUTE targetDPI NUMERIC
-@ATTRIBUTE baseScreenshot STRING
-@ATTRIBUTE targetScreenshot STRING
-@ATTRIBUTE baseX NUMERIC
-@ATTRIBUTE targetX NUMERIC
-@ATTRIBUTE baseY NUMERIC
-@ATTRIBUTE targetY NUMERIC
-@ATTRIBUTE baseHeight NUMERIC
-@ATTRIBUTE targetHeight NUMERIC
-@ATTRIBUTE baseWidth NUMERIC
-@ATTRIBUTE targetWidth NUMERIC
-@ATTRIBUTE baseParentX NUMERIC
-@ATTRIBUTE targetParentX NUMERIC
-@ATTRIBUTE baseParentY NUMERIC
-@ATTRIBUTE targetParentY NUMERIC
-@ATTRIBUTE imageDiff NUMERIC
-@ATTRIBUTE chiSquared NUMERIC
-@ATTRIBUTE baseDeviceWidth NUMERIC
-@ATTRIBUTE targetDeviceWidth NUMERIC
-@ATTRIBUTE baseViewportWidth NUMERIC
-@ATTRIBUTE targetViewportWidth NUMERIC
-@ATTRIBUTE xpath STRING
-@ATTRIBUTE baseXpath STRING
-@ATTRIBUTE targetXpath STRING
-@ATTRIBUTE phash NUMERIC
-@ATTRIBUTE basePreviousSiblingLeft NUMERIC
-@ATTRIBUTE targetPreviousSiblingLeft NUMERIC
-@ATTRIBUTE basePreviousSiblingTop NUMERIC
-@ATTRIBUTE targetPreviousSiblingTop NUMERIC
-@ATTRIBUTE baseNextSiblingLeft NUMERIC
-@ATTRIBUTE targetNextSiblingLeft NUMERIC
-@ATTRIBUTE baseNextSiblingTop NUMERIC
-@ATTRIBUTE targetNextSiblingTop NUMERIC
-@ATTRIBUTE baseTextNodes NUMERIC
-@ATTRIBUTE targetTextNodes NUMERIC
-@ATTRIBUTE baseFontFamily STRING
-@ATTRIBUTE targetFontFamily STRING
-@ATTRIBUTE external {1,0}
-@ATTRIBUTE internal {1,0}
+  return [attributes, data, `@RELATION browserninja.website
+
+@ATTRIBUTE URL string
+@ATTRIBUTE id numeric
+@ATTRIBUTE tagName string
+@ATTRIBUTE childsNumber numeric
+@ATTRIBUTE textLength numeric
+@ATTRIBUTE basePlatform string
+@ATTRIBUTE targetPlatform string
+@ATTRIBUTE baseBrowser string
+@ATTRIBUTE targetBrowser string
+@ATTRIBUTE baseDPI numeric
+@ATTRIBUTE targetDPI numeric
+@ATTRIBUTE baseScreenshot string
+@ATTRIBUTE targetScreenshot string
+@ATTRIBUTE baseX numeric
+@ATTRIBUTE targetX numeric
+@ATTRIBUTE baseY numeric
+@ATTRIBUTE targetY numeric
+@ATTRIBUTE baseHeight numeric
+@ATTRIBUTE targetHeight numeric
+@ATTRIBUTE baseWidth numeric
+@ATTRIBUTE targetWidth numeric
+@ATTRIBUTE baseParentX numeric
+@ATTRIBUTE targetParentX numeric
+@ATTRIBUTE baseParentY numeric
+@ATTRIBUTE targetParentY numeric
+@ATTRIBUTE imageDiff numeric
+@ATTRIBUTE chiSquared numeric
+@ATTRIBUTE baseDeviceWidth numeric
+@ATTRIBUTE targetDeviceWidth numeric
+@ATTRIBUTE baseViewportWidth numeric
+@ATTRIBUTE targetViewportWidth numeric
+@ATTRIBUTE xpath string
+@ATTRIBUTE baseXpath string
+@ATTRIBUTE targetXpath string
+@ATTRIBUTE phash numeric
+@ATTRIBUTE basePreviousSiblingLeft numeric
+@ATTRIBUTE targetPreviousSiblingLeft numeric
+@ATTRIBUTE basePreviousSiblingTop numeric
+@ATTRIBUTE targetPreviousSiblingTop numeric
+@ATTRIBUTE baseNextSiblingLeft numeric
+@ATTRIBUTE targetNextSiblingLeft numeric
+@ATTRIBUTE baseNextSiblingTop numeric
+@ATTRIBUTE targetNextSiblingTop numeric
+@ATTRIBUTE baseTextNodes numeric
+@ATTRIBUTE targetTextNodes numeric
+@ATTRIBUTE baseFontFamily string
+@ATTRIBUTE targetFontFamily string
+@ATTRIBUTE external {"1","0"}
+@ATTRIBUTE internal {"1","0"}
+
 @DATA
-${data_raw.join('\n')}`];
+${data_raw.join('\n')}
+`];
 }
 
 describe('/classified', () => {
@@ -190,4 +192,81 @@ describe('/classified', () => {
     });
 
   });
+
+  describe('storing classified', () => {
+
+    beforeAll(async () => {
+      const [attributes, data, arff] = get_rows(0);
+
+      fs.promises = {};
+      fs.promises.readFile = jest.fn();
+      fs.promises.readFile.mockResolvedValue(arff);
+
+      const resp = await request(app).get('/classified?uncached=1')
+                                     .expect('Content-type', /json/)
+                                     .expect(200);
+
+      expect(resp.body).toEqual({ length: 0 });
+    });
+
+    it('/classified should add row to classified file', async () => {
+      const [attributes, data, arff] = get_rows(1),
+            json = data[0];
+
+      let resp = await request(app).post('/classified')
+                                   .send({ action: 'add', data: json })
+                                   .expect('Content-type', /json/)
+                                   .expect(201);
+
+      expect(resp.body).toEqual({ message: 'success! yay' });
+
+      fs.promises = {};
+      fs.promises.writeFile = jest.fn();
+      fs.promises.writeFile.mockResolvedValue({});
+
+      resp = await request(app).post('/classified')
+                               .send({ action: 'save' })
+                               .expect('Content-type', /json/)
+                               .expect(200);
+
+      expect(resp.body).toEqual({ message: 'Arff file generated!!!' });
+      expect(fs.promises.writeFile).toHaveBeenCalledWith(
+        './data/dataset.classified.arff', arff);
+    });
+
+    it('/classified should add another row to classified file', async () => {
+      const [attributes, data, arff] = get_rows(3),
+            json1 = data[1],
+            json2 = data[2];
+
+      let resp = await request(app).post('/classified')
+                                   .send({ action: 'add', data: json1 })
+                                   .expect('Content-type', /json/)
+                                   .expect(201);
+
+      expect(resp.body).toEqual({ message: 'success! yay' });
+
+      resp = await request(app).post('/classified')
+                               .send({ action: 'add', data: json2 })
+                               .expect('Content-type', /json/)
+                               .expect(201);
+
+      expect(resp.body).toEqual({ message: 'success! yay' });
+
+      fs.promises = {};
+      fs.promises.writeFile = jest.fn();
+      fs.promises.writeFile.mockResolvedValue({});
+
+      resp = await request(app).post('/classified')
+                               .send({ action: 'save' })
+                               .expect('Content-type', /json/)
+                               .expect(200);
+
+      expect(resp.body).toEqual({ message: 'Arff file generated!!!' });
+      expect(fs.promises.writeFile).toHaveBeenCalledWith(
+        './data/dataset.classified.arff', arff);
+    });
+
+  });
+
 });

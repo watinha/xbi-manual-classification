@@ -1,0 +1,54 @@
+@RELATION browserninja.website
+
+@ATTRIBUTE URL string
+@ATTRIBUTE id numeric
+@ATTRIBUTE tagName string
+@ATTRIBUTE childsNumber numeric
+@ATTRIBUTE textLength numeric
+@ATTRIBUTE basePlatform string
+@ATTRIBUTE targetPlatform string
+@ATTRIBUTE baseBrowser string
+@ATTRIBUTE targetBrowser string
+@ATTRIBUTE baseDPI numeric
+@ATTRIBUTE targetDPI numeric
+@ATTRIBUTE baseScreenshot string
+@ATTRIBUTE targetScreenshot string
+@ATTRIBUTE baseX numeric
+@ATTRIBUTE targetX numeric
+@ATTRIBUTE baseY numeric
+@ATTRIBUTE targetY numeric
+@ATTRIBUTE baseHeight numeric
+@ATTRIBUTE targetHeight numeric
+@ATTRIBUTE baseWidth numeric
+@ATTRIBUTE targetWidth numeric
+@ATTRIBUTE baseParentX numeric
+@ATTRIBUTE targetParentX numeric
+@ATTRIBUTE baseParentY numeric
+@ATTRIBUTE targetParentY numeric
+@ATTRIBUTE imageDiff numeric
+@ATTRIBUTE chiSquared numeric
+@ATTRIBUTE baseDeviceWidth numeric
+@ATTRIBUTE targetDeviceWidth numeric
+@ATTRIBUTE baseViewportWidth numeric
+@ATTRIBUTE targetViewportWidth numeric
+@ATTRIBUTE xpath string
+@ATTRIBUTE baseXpath string
+@ATTRIBUTE targetXpath string
+@ATTRIBUTE phash numeric
+@ATTRIBUTE basePreviousSiblingLeft numeric
+@ATTRIBUTE targetPreviousSiblingLeft numeric
+@ATTRIBUTE basePreviousSiblingTop numeric
+@ATTRIBUTE targetPreviousSiblingTop numeric
+@ATTRIBUTE baseNextSiblingLeft numeric
+@ATTRIBUTE targetNextSiblingLeft numeric
+@ATTRIBUTE baseNextSiblingTop numeric
+@ATTRIBUTE targetNextSiblingTop numeric
+@ATTRIBUTE baseTextNodes numeric
+@ATTRIBUTE targetTextNodes numeric
+@ATTRIBUTE baseFontFamily string
+@ATTRIBUTE targetFontFamily string
+@ATTRIBUTE external {"1","0"}
+@ATTRIBUTE internal {"1","0"}
+
+@DATA
+
