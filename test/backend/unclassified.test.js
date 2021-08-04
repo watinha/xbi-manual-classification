@@ -1,5 +1,5 @@
 const request = require('supertest'),
-      app = require('../backend/app');
+      app = require('../../backend/app');
 
 let fs = require('fs');
 
@@ -120,7 +120,7 @@ describe('/unclassified', () => {
     jest.mock('fs');
   });
 
-  it('/unclassified should return a single row', async () => {
+  it('should return a single row', async () => {
     const [attributes, data, arff] = get_rows(1);
 
     fs.promises = {};
@@ -136,7 +136,7 @@ describe('/unclassified', () => {
       './data/dataset.unclassified.arff', { encoding: 'utf8' });
   });
 
-  it('/unclassified should return a two rows', async () => {
+  it('should return a two rows', async () => {
     const [attributes, data, arff] = get_rows(2);
 
     fs.promises = {};
@@ -152,7 +152,7 @@ describe('/unclassified', () => {
       './data/dataset.unclassified.arff', { encoding: 'utf8' });
   });
 
-  it('/unclassified should return no row', async () => {
+  it('should return no row', async () => {
     const [attributes, data, arff] = get_rows(0);
 
     fs.promises = {};
@@ -168,7 +168,7 @@ describe('/unclassified', () => {
       './data/dataset.unclassified.arff', { encoding: 'utf8' });
   });
 
-  it('/unclassified should return -1 if no file is found', async () => {
+  it('should return -1 if no file is found', async () => {
     fs.promises = {};
     fs.promises.readFile = jest.fn();
     fs.promises.readFile.mockRejectedValue('File not found!!! (Simulation)');
@@ -262,7 +262,7 @@ describe('/unclassified', () => {
       expect(fs.promises.readFile).not.toHaveBeenCalled();
     });
 
-    it('/unclassified should return a three rows with cache', async () => {
+    it('should return three rows with cache', async () => {
       const [attributes, data, arff] = get_rows(3);
 
       fs.promises = {};

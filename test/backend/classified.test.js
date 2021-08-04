@@ -1,5 +1,5 @@
 const request = require('supertest'),
-      app = require('../backend/app');
+      app = require('../../backend/app');
 
 let fs = require('fs');
 
@@ -128,7 +128,7 @@ describe('/classified', () => {
     jest.mock('fs');
   });
 
-  it('/classified should return a single row', async () => {
+  it('should return a single row', async () => {
     const [attributes, data, arff] = get_rows(1);
 
     fs.promises = {};
@@ -144,7 +144,7 @@ describe('/classified', () => {
       './data/dataset.classified.arff', { encoding: 'utf8' });
   });
 
-  it('/classified should return three rows', async () => {
+  it('should return three rows', async () => {
     const [attributes, data, arff] = get_rows(3);
 
     fs.promises = {};
@@ -160,7 +160,7 @@ describe('/classified', () => {
       './data/dataset.classified.arff', { encoding: 'utf8' });
   });
 
-  it('/classified should return empty if exception is thrown', async () => {
+  it('should return empty if exception is thrown', async () => {
     fs.promises = {};
     fs.promises.readFile = jest.fn();
     fs.promises.readFile.mockRejectedValue('File not found!!! (Simulation)');
@@ -176,7 +176,7 @@ describe('/classified', () => {
 
   describe('cached calls', () => {
 
-    it('/classified should not call readFile', async () => {
+    it('should not call readFile', async () => {
       const [attributes, data, arff] = get_rows(2);
 
       fs.promises = {};
@@ -209,7 +209,7 @@ describe('/classified', () => {
       expect(resp.body).toEqual({ length: 0 });
     });
 
-    it('/classified should add row to classified file', async () => {
+    it('should add row to classified file', async () => {
       const [attributes, data, arff] = get_rows(1),
             json = data[0];
 
@@ -234,7 +234,7 @@ describe('/classified', () => {
         './data/dataset.classified.arff', arff);
     });
 
-    it('/classified should add another row to classified file', async () => {
+    it('should add another row to classified file', async () => {
       const [attributes, data, arff] = get_rows(3),
             json1 = data[1],
             json2 = data[2];
