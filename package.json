@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "arff": "^0.1.1",
+    "@watinha/arff": "^0.1.2",
     "express": "^4.17.1"
   },
   "devDependencies": {

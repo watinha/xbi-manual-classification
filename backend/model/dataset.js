@@ -1,5 +1,5 @@
 const fs = require('fs'),
-      arff = require('arff'),
+      arff = require('@watinha/arff'),
       unclassified_filename = './data/dataset.unclassified.arff',
       classified_filename = './data/dataset.classified.arff',
       classifier = (() => {
