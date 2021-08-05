@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "build-frontend": "webpack",
+    "prestart": "webpack",
     "start": "node server.js"
   },
   "author": "",
@@ -15,6 +17,8 @@
   },
   "devDependencies": {
     "jest": "^27.0.6",
-    "supertest": "^6.1.4"
+    "supertest": "^6.1.4",
+    "webpack": "^5.48.0",
+    "webpack-cli": "^4.7.2"
   }
 }
