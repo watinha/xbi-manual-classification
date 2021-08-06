@@ -1,6 +1,7 @@
-const express = require('express'),
-      router = express.Router(),
-      dataset = require('../model/dataset');
+import express from 'express';
+import dataset from '../model/dataset.js';
+
+const router = express.Router();
 
 router.get('/', async (req, res) => {
   const { uncached } = req.query;
@@ -24,4 +25,4 @@ router.get('/:id', async (req, res) => {
     res.status(404).json({});
 });
 
-module.exports = router;
+export default router;

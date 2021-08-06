@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "build-frontend": "webpack",
     "prestart": "webpack",
     "start": "node server.js"
@@ -20,5 +21,8 @@
     "supertest": "^6.1.4",
     "webpack": "^5.48.0",
     "webpack-cli": "^4.7.2"
+  },
+  "jest": {
+    "transform": {}
   }
 }

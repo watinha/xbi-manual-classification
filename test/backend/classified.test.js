@@ -1,7 +1,7 @@
-const request = require('supertest'),
-      app = require('../../backend/app');
-
-let fs = require('fs');
+import { jest } from '@jest/globals';
+import request from 'supertest';
+import fs from 'fs';
+import app from '../../backend/app';
 
 function get_rows (n) {
   const rows = [
@@ -131,7 +131,6 @@ describe('/classified', () => {
   it('should return a single row', async () => {
     const [attributes, data, arff] = get_rows(1);
 
-    fs.promises = {};
     fs.promises.readFile = jest.fn();
     fs.promises.readFile.mockResolvedValue(arff);
 
@@ -147,7 +146,6 @@ describe('/classified', () => {
   it('should return three rows', async () => {
     const [attributes, data, arff] = get_rows(3);
 
-    fs.promises = {};
     fs.promises.readFile = jest.fn();
     fs.promises.readFile.mockResolvedValue(arff);
 
@@ -161,7 +159,6 @@ describe('/classified', () => {
   });
 
   it('should return empty if exception is thrown', async () => {
-    fs.promises = {};
     fs.promises.readFile = jest.fn();
     fs.promises.readFile.mockRejectedValue('File not found!!! (Simulation)');
 
@@ -179,7 +176,6 @@ describe('/classified', () => {
     it('should not call readFile', async () => {
       const [attributes, data, arff] = get_rows(2);
 
-      fs.promises = {};
       fs.promises.readFile = jest.fn();
       fs.promises.readFile.mockResolvedValue(arff);
 
@@ -198,7 +194,6 @@ describe('/classified', () => {
     beforeAll(async () => {
       const [attributes, data, arff] = get_rows(0);
 
-      fs.promises = {};
       fs.promises.readFile = jest.fn();
       fs.promises.readFile.mockResolvedValue(arff);
 
@@ -220,7 +215,6 @@ describe('/classified', () => {
 
       expect(resp.body).toEqual({ message: 'success! yay' });
 
-      fs.promises = {};
       fs.promises.writeFile = jest.fn();
       fs.promises.writeFile.mockResolvedValue({});
 
@@ -253,7 +247,6 @@ describe('/classified', () => {
 
       expect(resp.body).toEqual({ message: 'success! yay' });
 
-      fs.promises = {};
       fs.promises.writeFile = jest.fn();
       fs.promises.writeFile.mockResolvedValue({});
 

@@ -1,8 +1,10 @@
-const fs = require('fs'),
-      arff = require('@watinha/arff'),
-      unclassified_filename = './data/dataset.unclassified.arff',
-      classified_filename = './data/dataset.classified.arff',
-      classifier = (() => {
+import fs from 'fs';
+import arff from '@watinha/arff';
+
+const unclassified_filename = './data/dataset.unclassified.arff',
+      classified_filename = './data/dataset.classified.arff';
+
+let classifier = (() => {
 
   let cache = {
     'unclassified': -1,
@@ -53,4 +55,4 @@ const fs = require('fs'),
 
 })();
 
-module.exports = classifier;
+export default classifier;

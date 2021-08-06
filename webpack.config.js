@@ -1,6 +1,9 @@
-const path = require('path');
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-module.exports = {
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+export default {
   entry: './frontend/js/index.js',
   output: {
     filename: 'main.js',

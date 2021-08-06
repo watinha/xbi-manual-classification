@@ -1,7 +1,7 @@
-const request = require('supertest'),
-      app = require('../../backend/app');
-
-let fs = require('fs');
+import { jest } from '@jest/globals';
+import request from 'supertest';
+import fs from 'fs';
+import app from '../../backend/app';
 
 function get_rows (n) {
   const rows = [
@@ -123,7 +123,6 @@ describe('/unclassified', () => {
   it('should return a single row', async () => {
     const [attributes, data, arff] = get_rows(1);
 
-    fs.promises = {};
     fs.promises.readFile = jest.fn();
     fs.promises.readFile.mockResolvedValue(arff);
 
@@ -139,7 +138,6 @@ describe('/unclassified', () => {
   it('should return a two rows', async () => {
     const [attributes, data, arff] = get_rows(2);
 
-    fs.promises = {};
     fs.promises.readFile = jest.fn();
     fs.promises.readFile.mockResolvedValue(arff);
 
@@ -155,7 +153,6 @@ describe('/unclassified', () => {
   it('should return no row', async () => {
     const [attributes, data, arff] = get_rows(0);
 
-    fs.promises = {};
     fs.promises.readFile = jest.fn();
     fs.promises.readFile.mockResolvedValue(arff);
 
@@ -169,7 +166,6 @@ describe('/unclassified', () => {
   });
 
   it('should return -1 if no file is found', async () => {
-    fs.promises = {};
     fs.promises.readFile = jest.fn();
     fs.promises.readFile.mockRejectedValue('File not found!!! (Simulation)');
 
@@ -185,7 +181,6 @@ describe('/unclassified', () => {
   it('/unclassified/0 should return data row', async () => {
     const [attributes, data, arff] = get_rows(2);
 
-    fs.promises = {};
     fs.promises.readFile = jest.fn();
     fs.promises.readFile.mockResolvedValue(arff);
 
@@ -201,7 +196,6 @@ describe('/unclassified', () => {
   it('/unclassified/2 should return data row', async () => {
     const [attributes, data, arff] = get_rows(3);
 
-    fs.promises = {};
     fs.promises.readFile = jest.fn();
     fs.promises.readFile.mockResolvedValue(arff);
 
@@ -217,7 +211,6 @@ describe('/unclassified', () => {
   it('/unclassified/3 should return 404', async () => {
     const [attributes, data, arff] = get_rows(3);
 
-    fs.promises = {};
     fs.promises.readFile = jest.fn();
     fs.promises.readFile.mockResolvedValue(arff);
 
@@ -234,7 +227,6 @@ describe('/unclassified', () => {
     it('/unclassified should return a three rows', async () => {
       const [attributes, data, arff] = get_rows(3);
 
-      fs.promises = {};
       fs.promises.readFile = jest.fn();
       fs.promises.readFile.mockResolvedValue(arff);
 
@@ -250,7 +242,6 @@ describe('/unclassified', () => {
     it('/unclassified/2 should return data row with cache', async () => {
       const [attributes, data, arff] = get_rows(3);
 
-      fs.promises = {};
       fs.promises.readFile = jest.fn();
       fs.promises.readFile.mockResolvedValue(arff);
 
@@ -265,7 +256,6 @@ describe('/unclassified', () => {
     it('should return three rows with cache', async () => {
       const [attributes, data, arff] = get_rows(3);
 
-      fs.promises = {};
       fs.promises.readFile = jest.fn();
       fs.promises.readFile.mockResolvedValue(arff);
 

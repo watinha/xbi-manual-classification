@@ -1,3 +1,5 @@
-const port = process.env.PORT || 8080,
-      app = require('./app');
+import app from './backend/app.js';
+
+const port = process.env.PORT || 8080;
+
 app.listen(port);

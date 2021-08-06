@@ -1,8 +1,9 @@
-const express = require('express'),
-      router = express.Router(),
-      dataset = require('../model/dataset');
+import express from 'express';
+import fs from 'fs';
 
-let fs = require('fs');
+import dataset from '../model/dataset.js';
+
+const router = express.Router();
 
 router.get('/', async (req, res) => {
   const { uncached } = req.query;
@@ -28,4 +29,4 @@ router.post('/', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
