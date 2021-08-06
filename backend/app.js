@@ -9,7 +9,7 @@ import unclassified from './controller/unclassified.js';
 const app = express(),
       __dirname = dirname(fileURLToPath(import.meta.url));
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.json());
 
 app.use('/unclassified', unclassified);
