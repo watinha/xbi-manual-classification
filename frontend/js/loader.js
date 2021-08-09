@@ -1,14 +1,14 @@
 import axios from 'axios';
 
-const LengthRenderer = ({ url, target }) => {
+const Loader = ({ url, target, mapping }) => {
 
   return {
     render: async () => {
       const response = await axios.get(url);
-      target.innerHTML = response.length;
+      target.innerHTML = mapping(response.data);
     }
   };
 
 };
 
-export default LengthRenderer;
+export default Loader;
