@@ -95,7 +95,10 @@
                 <label for="classifier">Classificação (1 ou 0):</label>
                 <input type="text" id="external_classifier" value="" />
             </fieldset>
-            <span class="cursor" id="cursor"></span>
+            <div class="cursor" id="cursor">
+              <div>Classified: <span id="classified_count"></span></div>
+              <div>Total: <span id="unclassified_count"></span></div>
+            </div>
             <button style="">generate classified arff</button>
         </div>
 
