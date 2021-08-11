@@ -39,7 +39,7 @@ describe('loader', () => {
   });
 
   it('should render 1 element', async () => {
-    const mapping = jest.fn((data) => { console.log(data); }),
+    const mapping = jest.fn(),
           loader = Loader({
             'url': 'http://url2.com',
             'target': container,
@@ -56,6 +56,27 @@ describe('loader', () => {
 
     expect(container.innerHTML).toContain('abobrinha 1');
     expect(axios.get).toHaveBeenCalledWith('http://url2.com');
+    expect(mapping).toHaveBeenCalledWith(json);
+  });
+
+  it('should render 1 element, with cache', async () => {
+    const mapping = jest.fn(),
+          loader = Loader({
+            'url': 'http://url2.com',
+            'target': container,
+            mapping
+          }),
+          json = { length: 1 };
+
+    mapping.mockReturnValueOnce('abobrinha 1 with cache');
+    axios.get.mockResolvedValue({ data: json });
+
+    expect(container.innerHTML.length).toBe(0);
+
+    await loader.render();
+
+    expect(container.innerHTML).toContain('abobrinha 1 with cache');
+    expect(axios.get).not.toHaveBeenCalledWith('http://url2.com');
     expect(mapping).toHaveBeenCalledWith(json);
   });
 });
