@@ -5,14 +5,16 @@ const ELEMENTS = {
         CLASSIFIED_COUNT: document.querySelector('#classified_count'),
         UNCLASSIFIED_COUNT: document.querySelector('#unclassified_count'),
         SCREENSHOTS_DIV: document.querySelector('.screenshots'),
-        METADATA_TR: document.querySelector('#metadata_tr')
+        METADATA_TR: document.querySelector('#metadata_tr'),
+        SCREENSHOTS_CONTAINER: document.querySelector('#container')
       },
       URLS = {
         CLASSIFIED: './classified',
         UNCLASSIFIED: './unclassified'
       },
       cache = {
-        cursor: 0
+        cursor: 0,
+        current: false
       };
 
 let renderer = Renderer([
@@ -37,6 +39,7 @@ let renderer = Renderer([
             imgTarget = document.createElement("img"),
             baseContainer = document.createElement("div"),
             targetContainer = document.createElement("div");
+
       imgBase.src = data.baseScreenshot.replace(/\d+\.png/, 'complete.png')
       imgTarget.src = data.targetScreenshot.replace(/\d+\.png/, 'complete.png')
 
@@ -48,7 +51,7 @@ let renderer = Renderer([
   }),
   {
     render: () => {
-			const diffX = (parseInt(current.baseX) - parseInt(current.targetX)),
+      const diffX = (parseInt(current.baseX) - parseInt(current.targetX)),
             diffY = (parseInt(current.baseY) - parseInt(current.targetY)),
             diffHeight = (parseInt(current.baseHeight) - parseInt(current.targetHeight)),
             diffWidth = (parseInt(current.baseWidth) - parseInt(current.targetWidth)),
@@ -56,7 +59,7 @@ let renderer = Renderer([
             pHash = (current.phash);
 
       ELEMENTS.METADATA_TR.innerHTML =
-				"<td>" + (current.baseX) + "</td>" +
+        "<td>" + (current.baseX) + "</td>" +
         "<td>" + (current.targetX) + "</td>" +
         "<td>" + (current.baseY) + "</td>" +
         "<td>" + (current.targetY) + "</td>" +
@@ -64,15 +67,26 @@ let renderer = Renderer([
         "<td>" + (current.targetHeight) + "</td>" +
         "<td>" + (current.baseWidth) + "</td>" +
         "<td>" + (current.targetWidth) + "</td>" +
-        "<td style=\"background-color:" + (diffX == 0 ?"green":"red") + "\">" + diffX + "</td>" +
-        "<td style=\"background-color:" + (diffY == 0 ?"green":"red") + "\">" + diffY + "</td>" +
-        "<td style=\"background-color:" + (diffHeight == 0 ?"green":"red") + "\">" + diffHeight + "</td>" +
-        "<td style=\"background-color:" + (diffWidth == 0 ?"green":"red") + "\">" + diffWidth + "</td>" +
-        "<td style=\"background-color:" + (imageDiff == 0 ?"green":"red") + "\">" + imageDiff + "</td>" +
+        "<td style=\"background-color:" + (diffX == 0 ? "green":"red") + "\">" + diffX + "</td>" +
+        "<td style=\"background-color:" + (diffY == 0 ? "green":"red") + "\">" + diffY + "</td>" +
+        "<td style=\"background-color:" + (diffHeight == 0 ? "green":"red") + "\">" + diffHeight + "</td>" +
+        "<td style=\"background-color:" + (diffWidth == 0 ? "green":"red") + "\">" + diffWidth + "</td>" +
+        "<td style=\"background-color:" + (imageDiff == 0 ? "green":"red") + "\">" + imageDiff + "</td>" +
         "<td>" + (current.basePlatform != 'null') + "</td>" +
         "<td>" + (current.targetPlatform != 'null') + "</td>" +
-        "<td style=\"background-color:" + ((pHash==0 || pHash>0.90) ?"green":"red") + "\">" + pHash + "</td>" +
+        "<td style=\"background-color:" + ((pHash==0 || pHash>0.90) ? "green":"red") + "\">" + pHash + "</td>" +
         "<td>" + current.Result + "</td>";
+    }
+  },
+  {
+    render: () => {
+      const baseScreenshot = document.createElement('img'),
+            targetScreenshot = document.createElement('img');
+
+      baseScreenshot.src = cache.current.baseScreenshot;
+      targetScreenshot.src = cache.current.targetScreenshot;
+
+      ELEMENTS.SCREENSHOTS_CONTAINER.innerHTML = [baseScreenshot.outerHTML, targetScreenshot.outerHTML].join('');
     }
   }
 ]);
