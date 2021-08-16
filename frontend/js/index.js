@@ -12,11 +12,9 @@ const ELEMENTS = {
       URLS = {
         CLASSIFIED: './classified',
         UNCLASSIFIED: './unclassified'
-      },
-      cache = {
-        cursor: 0,
-        current: false
       };
+
+let cursor = 0;
 
 let renderer = Renderer([
   Loader({
@@ -30,17 +28,17 @@ let renderer = Renderer([
     mapping: (data) => data.length
   }),
   Loader({
-    url: [URLS.UNCLASSIFIED, '/', cache.cursor].join(''),
+    url: `${URLS.UNCLASSIFIED}/${cursor}`,
     target: ELEMENTS.SCREENSHOTS_DIV,
     mapping: render_complete_screenshot
   }),
   Loader({
-    url: [URLS.UNCLASSIFIED, '/', cache.cursor].join(''),
+    url: `${URLS.UNCLASSIFIED}/${cursor}`,
     target: ELEMENTS.METADATA_TR,
     mapping: render_metadata
   }),
   Loader({
-    url: [URLS.UNCLASSIFIED, '/', cache.cursor].join(''),
+    url: `${URLS.UNCLASSIFIED}/${cursor}`,
     target: ELEMENTS.SCREENSHOTS_CONTAINER,
     mapping: render_screenshot
   })
