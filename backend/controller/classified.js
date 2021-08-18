@@ -15,18 +15,15 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const { action, data } = req.body;
+  dataset.save_classified();
+  res.status(200).json({ message: 'Arff file generated!!!' });
+});
 
-  switch (action) {
-    case 'add':
-      dataset.add_classified(data);
-      res.status(201).json({ message: 'success! yay' });
-      break;
-    case 'save':
-      dataset.save_classified();
-      res.status(200).json({ message: 'Arff file generated!!!' });
-      break;
-  }
+router.put('/:id', async (req, res) => {
+  const { id } = req.params,
+        { data } = req.body;
+  dataset.classify(id, data);
+  res.status(200).json({ message: 'success! yay' });
 });
 
 export default router;

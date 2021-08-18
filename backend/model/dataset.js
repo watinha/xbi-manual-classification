@@ -42,8 +42,9 @@ let classifier = (() => {
       return cache['classified']['data'].length;
     },
 
-    add_classified: (row) => {
-      cache['classified']['data'].push(row);
+    classify: (id, { external, internal }) => {
+      cache['classified']['data'][parseInt(id)].external = external;
+      cache['classified']['data'][parseInt(id)].internal = internal;
     },
 
     save_classified: async () => {
