@@ -24,12 +24,12 @@ const App = ({ renderer, max=100000 }) => {
       self.set_cursor(cursor - 1);
     },
 
-    classify: (data) => {
-      axios.post(CLASSIFY_URL, { action: 'add', data });
+    classify: (id, data) => {
+      axios.put(`${CLASSIFY_URL}/${id}`, { data });
     },
 
     save: () => {
-      axios.post(CLASSIFY_URL, { action: 'save' });
+      axios.post(CLASSIFY_URL);
     }
   };
 

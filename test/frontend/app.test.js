@@ -119,32 +119,30 @@ describe('app', () => {
 
   describe('classifying and saving', () => {
 
-    it('should send a classified row to the server', async () => {
+    it('should send classified row (id=0) to the server', async () => {
       const renderer_mock = { render: jest.fn() },
             app = App({ renderer: renderer_mock, max: 33 }),
             row_stub = { external: 1, internal: 1 };
 
-      axios.post = jest.fn();
-      axios.post.mockResolvedValue({ message: 'success! yay' });
+      axios.put = jest.fn();
+      axios.put.mockResolvedValue({ message: 'success! yay' });
 
-      app.classify(row_stub);
+      app.classify(0, row_stub);
 
-      expect(axios.post).toHaveBeenCalledWith('./classified', {
-        action: 'add', data: row_stub });
+      expect(axios.put).toHaveBeenCalledWith('./classified/0', { data: row_stub });
     });
 
-    it('should send a different classified row to the server', async () => {
+    it('should send a different classified row (id=2) to the server', async () => {
       const renderer_mock = { render: jest.fn() },
             app = App({ renderer: renderer_mock, max: 33 }),
             row_stub = { external: 0, internal: 0 };
 
-      axios.post = jest.fn();
-      axios.post.mockResolvedValue({ message: 'success! yay' });
+      axios.put = jest.fn();
+      axios.put.mockResolvedValue({ message: 'success! yay' });
 
-      app.classify(row_stub);
+      app.classify(2, row_stub);
 
-      expect(axios.post).toHaveBeenCalledWith('./classified', {
-        action: 'add', data: row_stub });
+      expect(axios.put).toHaveBeenCalledWith('./classified/2', { data: row_stub });
     });
 
     it('should send save action to server', async () => {
@@ -156,8 +154,7 @@ describe('app', () => {
 
       app.save();
 
-      expect(axios.post).toHaveBeenCalledWith('./classified', {
-        action: 'save' });
+      expect(axios.post).toHaveBeenCalledWith('./classified');
     });
 
   });
