@@ -8,7 +8,7 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "build-frontend": "webpack",
     "prestart": "webpack",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "author": "",
   "license": "ISC",

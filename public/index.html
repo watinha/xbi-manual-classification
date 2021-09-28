@@ -8,7 +8,7 @@
                 display: block;
             }
             .screenshots {
-                margin-top: 75px;
+                margin-top: 150px;
                 position: relative;
             }
             .menu {
@@ -61,6 +61,11 @@
                 margin: 0;
                 padding: 5px;
             }
+            .screenshots .pointer {
+                background-color: red;
+                opacity: 0.7;
+                position: absolute;
+            }
         </style>
     </head>
     <body>
@@ -77,8 +82,10 @@
                 <th>diff.x</th><th>diff.y</th><th>diff.height</th><th>diff.width</th>
                 <th>imageDiff</th><th>basePlatform</th><th>targetPlatform</th>
                 <th>pHashSimilarity</th>
-                <th>Result</th>
+                <th>external</th>
+                <th>internal</th>
             </tr>
+            <tr class="metadata"></tr>
         </table>
 
         <div class="screenshots">
@@ -98,6 +105,8 @@
             <div class="cursor" id="cursor">
               <div>Classified: <span id="classified_count"></span></div>
               <div>Total: <span id="unclassified_count"></span></div>
+              <div class="base"></div>
+              <div class="target"></div>
             </div>
             <button style="">generate classified arff</button>
         </div>
