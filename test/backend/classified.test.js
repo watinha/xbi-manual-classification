@@ -65,7 +65,7 @@ function get_rows (n) {
     data.push(row);
   });
 
-  return [attributes, data, `@RELATION browserninja.website
+  const arff_header = `@RELATION browserninja.website
 
 @ATTRIBUTE URL string
 @ATTRIBUTE id numeric
@@ -117,9 +117,10 @@ function get_rows (n) {
 @ATTRIBUTE external {1,0}
 @ATTRIBUTE internal {1,0}
 
-@DATA
-${data_raw.join('\n')}
-`];
+@DATA`;
+
+  return [attributes, data, `${arff_header}
+${data_raw.join('\n')}`, arff_header];
 }
 
 describe('/classified', () => {
@@ -189,29 +190,41 @@ describe('/classified', () => {
 
   });
 
-  describe('storing classified', () => {
+  describe('editing classified', () => {
+
+    const [attributes, data, arff, arff_header] = get_rows(3);
 
     beforeAll(async () => {
-      const [attributes, data, arff] = get_rows(0);
-
       fs.promises.readFile = jest.fn();
       fs.promises.readFile.mockResolvedValue(arff);
 
       const resp = await request(app).get('/classified?uncached=1')
                                      .expect('Content-type', /json/)
                                      .expect(200);
-
-      expect(resp.body).toEqual({ length: 0 });
     });
 
-    it('should add row to classified file', async () => {
-      const [attributes, data, arff] = get_rows(1),
-            json = data[0];
+    function generate_arff (data) {
+      return (arff_header + '\n' +
+        data.map((row) => attributes.map((attr) => {
+          if (attr.type === 'string')
+            return `"${row[attr.name]}"`;
+          return row[attr.name];
+        }).join(',')).join('\n') + '\n');
+    }
 
-      let resp = await request(app).post('/classified')
-                                   .send({ action: 'add', data: json })
-                                   .expect('Content-type', /json/)
-                                   .expect(201);
+    it('should edit row to classified file', async () => {
+      let json = data[0],
+          new_arff = '';
+
+      json.internal = 0;
+      json.external = 0;
+
+      new_arff = generate_arff(data);
+
+      let resp = await request(app).put('/classified/0')
+                                   .send({ data: json })
+                                   .expect(200)
+                                   .expect('Content-type', /json/);
 
       expect(resp.body).toEqual({ message: 'success! yay' });
 
@@ -225,25 +238,22 @@ describe('/classified', () => {
 
       expect(resp.body).toEqual({ message: 'Arff file generated!!!' });
       expect(fs.promises.writeFile).toHaveBeenCalledWith(
-        './data/dataset.classified.arff', arff);
+        './data/dataset.classified.arff', new_arff);
     });
 
-    it('should add another row to classified file', async () => {
-      const [attributes, data, arff] = get_rows(3),
-            json1 = data[1],
-            json2 = data[2];
+    it('should classity another row and save to classified file', async () => {
+      let json = data[2],
+          new_arff = '';
 
-      let resp = await request(app).post('/classified')
-                                   .send({ action: 'add', data: json1 })
-                                   .expect('Content-type', /json/)
-                                   .expect(201);
+      json.internal = 1;
+      json.external = 1;
 
-      expect(resp.body).toEqual({ message: 'success! yay' });
+      new_arff = generate_arff(data);
 
-      resp = await request(app).post('/classified')
-                               .send({ action: 'add', data: json2 })
-                               .expect('Content-type', /json/)
-                               .expect(201);
+      let resp = await request(app).put('/classified/2')
+                                   .send({ data: json })
+                                   .expect(200)
+                                   .expect('Content-type', /json/);
 
       expect(resp.body).toEqual({ message: 'success! yay' });
 
@@ -257,7 +267,7 @@ describe('/classified', () => {
 
       expect(resp.body).toEqual({ message: 'Arff file generated!!!' });
       expect(fs.promises.writeFile).toHaveBeenCalledWith(
-        './data/dataset.classified.arff', arff);
+        './data/dataset.classified.arff', new_arff);
     });
 
   });

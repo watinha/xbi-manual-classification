@@ -1,5 +1,6 @@
 import Renderer from './renderer.js';
 import Loader from './loader.js';
+import { render_complete_screenshot, render_metadata, render_screenshot } from './components/index.js';
 
 const ELEMENTS = {
         CLASSIFIED_COUNT: document.querySelector('#classified_count'),
@@ -7,15 +8,17 @@ const ELEMENTS = {
         SCREENSHOTS_DIV: document.querySelector('.screenshots'),
         BASE_CURSOR_DIV: document.querySelector('.cursor .base'),
         TARGET_CURSOR_DIV: document.querySelector('.cursor .target'),
-        METADATA_TR: document.querySelector('.metadata')
+        METADATA_TR: document.querySelector('.metadata'),
+        SCREENSHOTS_CONTAINER: document.querySelector('#container')
       },
       URLS = {
         CLASSIFIED: './classified',
         UNCLASSIFIED: './unclassified'
       };
 
-let cursor = 0,
-    renderer = Renderer([
+let cursor = 0;
+
+let renderer = Renderer([
   Loader({
     url: URLS.CLASSIFIED,
     target: ELEMENTS.CLASSIFIED_COUNT,
@@ -27,7 +30,7 @@ let cursor = 0,
     mapping: (data) => data.length
   }),
   Loader({
-    url: [URLS.UNCLASSIFIED, '/', cursor].join(''),
+    url: `${URLS.UNCLASSIFIED}/${cursor}`,
     target: ELEMENTS.SCREENSHOTS_DIV,
     mapping: (data) => {
       const imgBase = document.createElement("img"),
