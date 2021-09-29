@@ -16,19 +16,18 @@ with open('./data/dataset.unclassified.arff') as f:
         base_platform = row[attributes.index('basePlatform')]
         target_platform = row[attributes.index('targetPlatform')]
         print('%s // %s' % (base_screenshot, target_screenshot))
+        print('%s // %s' % (base_platform, target_platform))
 
         def get_complete_screenshot (screenshot, platform):
             if screenshot.rfind('null') == -1:
                 return 'public' + screenshot[1:screenshot.rfind('/')] + '/complete.png'
             else:
-                platform = row[attributes.index('basePlatform')]
-
                 def get_platform_folder (platform):
                     if platform.rfind('iPhone 12 mini') >= 0:
                         return 'iphone12mini'
                     elif platform.rfind('iPhone 12 Pro Max') >= 0:
                         return 'iphone12max'
-                    elif platform.rfind('iPhone 12'):
+                    elif platform.rfind('iPhone 12') >= 0:
                         return 'iphone12'
                     else:
                         return 'pixel_xl'
@@ -40,6 +39,7 @@ with open('./data/dataset.unclassified.arff') as f:
 
         base_screenshot = get_complete_screenshot(base_screenshot, base_platform)
         target_screenshot = get_complete_screenshot(target_screenshot, target_platform)
+        print('%s -- %s' % (base_screenshot, target_screenshot))
 
         try:
             with Image.open(base_screenshot) as base_img, Image.open(target_screenshot) as target_img:
@@ -51,21 +51,20 @@ with open('./data/dataset.unclassified.arff') as f:
                 baseY = row[attributes.index('baseY')]
                 targetY = row[attributes.index('targetY')]
 
-                print('%s - %s' % (base_screenshot, target_screenshot))
-
-                if (baseX == -1 or baseX > base_width) and (targetX == -1 or targetX > target_width):
+                if (baseX == -1 or baseX >= base_width) and (targetX == -1 or targetX >= target_width):
                     outside.append(row)
-                elif (baseY == -1 or baseY > base_height) and (targetY == -1 or targetY > target_height):
+                elif (baseY == -1 or baseY >= base_height) and (targetY == -1 or targetY >= target_height):
                     outside.append(row)
                 else:
                     new_data.append(row)
+
         except:
             removed_website = removed_website + 1
             print('Removed website')
             outside.append(row)
 
     print(len(outside))
-    print('Removed website %d' % (removed_website))
+    print('Removed rows %d' % (removed_website))
 
     dataset['data'] = new_data
 
