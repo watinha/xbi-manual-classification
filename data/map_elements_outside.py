@@ -53,9 +53,9 @@ with open('./data/dataset.unclassified.arff') as f:
 
                 print('%s - %s' % (base_screenshot, target_screenshot))
 
-                if baseX > base_width and targetX > target_width:
+                if (baseX == -1 or baseX > base_width) and (targetX == -1 or targetX > target_width):
                     outside.append(row)
-                elif baseY > base_height and targetY > target_height:
+                elif (baseY == -1 or baseY > base_height) and (targetY == -1 or targetY > target_height):
                     outside.append(row)
                 else:
                     new_data.append(row)
