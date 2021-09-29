@@ -1,7 +1,7 @@
 import fs from 'fs';
 import arff from '@watinha/arff';
 
-const unclassified_filename = './data/dataset.unclassified.arff',
+const unclassified_filename = './data/dataset.unclassified.filtered.arff',
       classified_filename = './data/dataset.classified.arff';
 
 let classifier = (() => {
