@@ -7,8 +7,28 @@ const render_complete_screenshot = (data) => {
         pointerTarget = document.createElement('div'),
         baseContainer = document.createElement("div"),
         targetContainer = document.createElement("div");
-  imgBase.src = data.baseScreenshot.replace(/\d+\.png/, 'complete.png');
-  imgTarget.src = data.targetScreenshot.replace(/\d+\.png/, 'complete.png')
+
+  const get_complete_screenshot = (screenshot, platform) => {
+    if (screenshot.search(/\d+\.png/) >= 0)
+      return screenshot.replace(/\d+\.png/, 'complete.png');
+    else {
+      let platform_folder = '',
+          website_folder = '';
+      if (platform.search('iPhone 12 mini') >= 0)
+        platform_folder = 'iphone12mini';
+      else if (platform.search('iPhone 12 Pro Max') >= 0)
+        platform_folder = 'iphone12max';
+      else if (platform.search('iPhone 12') >= 0)
+        platform_folder = 'iphone12';
+      else
+        platform_folder = 'pixel_xl';
+
+      website_folder = screenshot.substr(1, data.baseScreenshot.length - 5);
+      return `${website_folder}results/${platform_folder}/complete.png`;
+    }
+  }
+  imgBase.src = get_complete_screenshot(data.baseScreenshot, data.basePlatform);
+  imgTarget.src = get_complete_screenshot(data.targetScreenshot, data.targetPlatform);
 
   pointerBase.className = 'pointer';
   pointerBase.style.top = `${data.baseY}px`;
