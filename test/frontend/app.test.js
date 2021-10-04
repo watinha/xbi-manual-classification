@@ -109,10 +109,12 @@ describe('app', () => {
       const renderer_mock = { render: jest.fn() },
             app = App({ renderer: renderer_mock, max: 33 });
 
+      app.set_cursor(0);
+
       app.previous();
 
       expect(app.get_cursor()).toBe(0);
-      expect(renderer_mock.render.mock.calls.length).toBe(2);
+      expect(renderer_mock.render.mock.calls.length).toBe(3);
     });
 
   });

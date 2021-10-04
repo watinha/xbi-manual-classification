@@ -22,7 +22,7 @@ const ELEMENTS = {
 let cursor = 0,
     current = null;
 
-const renderer = Renderer([
+const default_renderer = Renderer([
   Loader({
     url: URLS.CLASSIFIED,
     target: ELEMENTS.CLASSIFIED_COUNT,
@@ -58,7 +58,7 @@ const renderer = Renderer([
   })
 ]);
 
-const App = ({ max=100000 }) => {
+const App = ({ renderer=default_renderer, max=100000 }) => {
   renderer.render();
 
   const self = {
