@@ -57,27 +57,29 @@ let classifier = (() => {
       const x = parseInt(position_x),
             y = parseInt(position_y),
             id = parseInt(current_id);
-      let previous, current = cache['classified']['data'][id], direction, i;
+      let current = cache['classified']['data'][id],
+          url = current.URL,
+          closest = current,
+          first_element_id = (() => {
+            for (let i = id - 1; i >= 0; i--) {
+              if (cache['classified']['data'][i].URL !== url)
+                return i + 1;
+            }
+            return 0;
+          })();
 
-      direction = (current.baseY > y ? () => i++ : () => i--);
-
-      for (i = id; i < cache['classified']['data'].length && i >= 0; direction()) {
+      for (let i = first_element_id; i < cache['classified']['data'].length; i++) {
         current = cache['classified']['data'][i];
 
-        if (previous && current.URL !== previous.URL)
-          return previous;
+        if (current.URL !== url)
+          return closest;
 
-        if (current.baseX === x && current.baseY === y)
-          return current;
-
-        if (previous && (distance(x, previous.baseX, y, previous.baseY) <
-                         distance(x, current.baseX, y, current.baseY)))
-          return previous;
-
-        previous = current;
+        if (distance(x, current.baseX, y, current.baseY) <
+            distance(x, closest.baseX, y, closest.baseY))
+          closest = current;
       };
 
-      return current;
+      return closest;
     }
 
   };
