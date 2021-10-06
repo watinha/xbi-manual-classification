@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "build-frontend": "webpack",
-    "prestart": "webpack",
+    "frontend-dev": "webpack --mode=development",
+    "frontend-prod": "webpack",
     "start": "nodemon server.js"
   },
   "author": "",

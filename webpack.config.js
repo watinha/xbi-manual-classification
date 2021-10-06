@@ -5,6 +5,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default {
   entry: './frontend/js/index.js',
+  watch: true,
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'public'),
