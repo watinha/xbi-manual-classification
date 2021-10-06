@@ -190,6 +190,90 @@ describe('/classified', () => {
 
   });
 
+  describe('search', () => {
+
+    let rows = null;
+
+    beforeAll(async () => {
+      const [attributes, data, arff] = get_rows(3);
+
+      rows = data;
+
+      fs.promises.readFile = jest.fn();
+      fs.promises.readFile.mockResolvedValue(arff);
+
+      const resp = await request(app).get('/classified?uncached=1')
+                                     .expect('Content-type', /json/)
+                                     .expect(200);
+    });
+
+    it('should search up for element based on base position', async () => {
+      let resp = await request(app).get('/classified/base/168/11953/0')
+                                   .expect(200)
+                                   .expect('Content-type', /json/);
+
+      expect(resp.body).toEqual(rows[0]);
+    });
+
+    it('should search up for a different element based on base position', async () => {
+      let resp = await request(app).get('/classified/base/15/6210/0')
+                                   .expect(200)
+                                   .expect('Content-type', /json/);
+
+      expect(resp.body).toEqual(rows[1]);
+    });
+
+    it('should search up for closest element based on base position', async () => {
+      let resp = await request(app).get('/classified/base/100/10000/0')
+                                   .expect(200)
+                                   .expect('Content-type', /json/);
+
+      expect(resp.body).toEqual(rows[0]);
+    });
+
+    it('should search up for closest element based on base position, with another base', async () => {
+      let resp = await request(app).get('/classified/base/100/5000/0')
+                                   .expect(200)
+                                   .expect('Content-type', /json/);
+
+      expect(resp.body).toEqual(rows[1]);
+    });
+
+    it('should search up for closest element starting from current element', async () => {
+      let resp = await request(app).get('/classified/base/100/6100/1')
+                                   .expect(200)
+                                   .expect('Content-type', /json/);
+
+      expect(resp.body).toEqual(rows[1]);
+    });
+
+    it('should search up for closest element in 0 x 0 position', async () => {
+      let resp = await request(app).get('/classified/base/0/0/0')
+                                   .expect(200)
+                                   .expect('Content-type', /json/);
+
+      expect(resp.body).toEqual(rows[1]);
+    });
+
+
+    it('should search up for closest element in the same webpage', async () => {
+      let resp = await request(app).get('/classified/base/40/6100/1')
+                                   .expect(200)
+                                   .expect('Content-type', /json/);
+
+      expect(resp.body).toEqual(rows[1]);
+    });
+
+    it('should search down for closest element in 168 x 10000 position', async () => {
+      let resp = await request(app).get('/classified/base/168/10000/1')
+                                   .expect(200)
+                                   .expect('Content-type', /json/);
+
+      expect(resp.body).toEqual(rows[0]);
+    });
+
+  });
+
   describe('editing classified', () => {
 
     const [attributes, data, arff, arff_header] = get_rows(3);

@@ -26,4 +26,11 @@ router.put('/:id', async (req, res) => {
   res.status(200).json({ message: 'success! yay' });
 });
 
+router.get('/base/:position_x/:position_y/:current_id', (req, res) => {
+  const { position_x, position_y, current_id } = req.params,
+        result = dataset.search({ position_x, position_y, current_id });
+
+  res.status(200).json(result);
+});
+
 export default router;

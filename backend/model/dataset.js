@@ -1,8 +1,9 @@
 import fs from 'fs';
 import arff from '@watinha/arff';
 
-const unclassified_filename = './data/dataset.unclassified.filtered.arff',
-      classified_filename = './data/dataset.classified.arff';
+const unclassified_filename = './data/dataset.unclassified.arff',
+      classified_filename = './data/dataset.classified.arff',
+      distance = (x_1, x_2, y_1, y_2) => Math.sqrt((x_1 - x_2) ** 2 + (y_1 - y_2) ** 2);
 
 let classifier = (() => {
 
@@ -50,6 +51,33 @@ let classifier = (() => {
     save_classified: async () => {
       return fs.promises.writeFile(classified_filename,
         arff.format(cache['classified']));
+    },
+
+    search: ({ position_x, position_y, current_id }) => {
+      const x = parseInt(position_x),
+            y = parseInt(position_y),
+            id = parseInt(current_id);
+      let previous, current = cache['classified']['data'][id], direction, i;
+
+      direction = (current.baseY > y ? () => i++ : () => i--);
+
+      for (i = id; i < cache['classified']['data'].length && i >= 0; direction()) {
+        current = cache['classified']['data'][i];
+
+        if (previous && current.URL !== previous.URL)
+          return previous;
+
+        if (current.baseX === x && current.baseY === y)
+          return current;
+
+        if (previous && (distance(x, previous.baseX, y, previous.baseY) <
+                         distance(x, current.baseX, y, current.baseY)))
+          return previous;
+
+        previous = current;
+      };
+
+      return current;
     }
 
   };
