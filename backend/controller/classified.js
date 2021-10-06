@@ -30,7 +30,7 @@ router.get('/base/:position_x/:position_y/:current_id', (req, res) => {
   const { position_x, position_y, current_id } = req.params,
         result = dataset.search({ position_x, position_y, current_id });
 
-  res.status(200).json(result);
+  res.status(200).json({ closest: result });
 });
 
 export default router;

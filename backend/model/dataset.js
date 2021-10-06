@@ -60,6 +60,7 @@ let classifier = (() => {
       let current = cache['classified']['data'][id],
           url = current.URL,
           closest = current,
+          closest_id = cache['classified']['data'].indexOf(closest),
           first_element_id = (() => {
             for (let i = id - 1; i >= 0; i--) {
               if (cache['classified']['data'][i].URL !== url)
@@ -72,14 +73,17 @@ let classifier = (() => {
         current = cache['classified']['data'][i];
 
         if (current.URL !== url)
-          return closest;
+          return closest_id;
 
         if (distance(x, current.baseX, y, current.baseY) <
-            distance(x, closest.baseX, y, closest.baseY))
+            distance(x, closest.baseX, y, closest.baseY)) {
           closest = current;
+          closest_id = i;
+        }
+
       };
 
-      return closest;
+      return closest_id;
     }
 
   };

@@ -212,7 +212,7 @@ describe('/classified', () => {
                                    .expect(200)
                                    .expect('Content-type', /json/);
 
-      expect(resp.body).toEqual(rows[0]);
+      expect(resp.body).toEqual({ 'closest': 0 });
     });
 
     it('should search up for a different element based on base position', async () => {
@@ -220,7 +220,7 @@ describe('/classified', () => {
                                    .expect(200)
                                    .expect('Content-type', /json/);
 
-      expect(resp.body).toEqual(rows[1]);
+      expect(resp.body).toEqual({ 'closest': 1 });
     });
 
     it('should search up for closest element based on base position', async () => {
@@ -228,7 +228,7 @@ describe('/classified', () => {
                                    .expect(200)
                                    .expect('Content-type', /json/);
 
-      expect(resp.body).toEqual(rows[0]);
+      expect(resp.body).toEqual({ 'closest': 0 });
     });
 
     it('should search up for closest element based on base position, with another base', async () => {
@@ -236,7 +236,7 @@ describe('/classified', () => {
                                    .expect(200)
                                    .expect('Content-type', /json/);
 
-      expect(resp.body).toEqual(rows[1]);
+      expect(resp.body).toEqual({ 'closest': 1 });
     });
 
     it('should search up for closest element starting from current element', async () => {
@@ -244,7 +244,7 @@ describe('/classified', () => {
                                    .expect(200)
                                    .expect('Content-type', /json/);
 
-      expect(resp.body).toEqual(rows[1]);
+      expect(resp.body).toEqual({ 'closest': 1 });
     });
 
     it('should search up for closest element in 0 x 0 position', async () => {
@@ -252,7 +252,7 @@ describe('/classified', () => {
                                    .expect(200)
                                    .expect('Content-type', /json/);
 
-      expect(resp.body).toEqual(rows[1]);
+      expect(resp.body).toEqual({ 'closest': 1 });
     });
 
 
@@ -261,7 +261,7 @@ describe('/classified', () => {
                                    .expect(200)
                                    .expect('Content-type', /json/);
 
-      expect(resp.body).toEqual(rows[1]);
+      expect(resp.body).toEqual({ 'closest': 1 });
     });
 
     it('should search down for closest element in 168 x 10000 position', async () => {
@@ -269,7 +269,7 @@ describe('/classified', () => {
                                    .expect(200)
                                    .expect('Content-type', /json/);
 
-      expect(resp.body).toEqual(rows[0]);
+      expect(resp.body).toEqual({ 'closest': 0 });
     });
 
   });
