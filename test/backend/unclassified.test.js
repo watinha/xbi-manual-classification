@@ -132,7 +132,7 @@ describe('/unclassified', () => {
 
     expect(resp.body).toEqual({ length: 1 });
     expect(fs.promises.readFile).toHaveBeenCalledWith(
-      './data/dataset.unclassified.arff', { encoding: 'utf8' });
+      './data/dataset.unclassified.filtered.arff', { encoding: 'utf8' });
   });
 
   it('should return a two rows', async () => {
@@ -147,7 +147,7 @@ describe('/unclassified', () => {
 
     expect(resp.body).toEqual({ length: 2 });
     expect(fs.promises.readFile).toHaveBeenCalledWith(
-      './data/dataset.unclassified.arff', { encoding: 'utf8' });
+      './data/dataset.unclassified.filtered.arff', { encoding: 'utf8' });
   });
 
   it('should return no row', async () => {
@@ -162,7 +162,7 @@ describe('/unclassified', () => {
 
     expect(resp.body).toEqual({ length: 0 });
     expect(fs.promises.readFile).toHaveBeenCalledWith(
-      './data/dataset.unclassified.arff', { encoding: 'utf8' });
+      './data/dataset.unclassified.filtered.arff', { encoding: 'utf8' });
   });
 
   it('should return -1 if no file is found', async () => {
@@ -175,7 +175,7 @@ describe('/unclassified', () => {
 
     expect(resp.body).toEqual({ length: -1 });
     expect(fs.promises.readFile).toHaveBeenCalledWith(
-      './data/dataset.unclassified.arff', { encoding: 'utf8' });
+      './data/dataset.unclassified.filtered.arff', { encoding: 'utf8' });
   });
 
   it('/unclassified/0 should return data row', async () => {
@@ -190,7 +190,7 @@ describe('/unclassified', () => {
 
     expect(resp.body).toEqual({ ...data[1] });
     expect(fs.promises.readFile).toHaveBeenCalledWith(
-      './data/dataset.unclassified.arff', { encoding: 'utf8' });
+      './data/dataset.unclassified.filtered.arff', { encoding: 'utf8' });
   });
 
   it('/unclassified/2 should return data row', async () => {
@@ -205,7 +205,7 @@ describe('/unclassified', () => {
 
     expect(resp.body).toEqual({ ...data[2] });
     expect(fs.promises.readFile).toHaveBeenCalledWith(
-      './data/dataset.unclassified.arff', { encoding: 'utf8' });
+      './data/dataset.unclassified.filtered.arff', { encoding: 'utf8' });
   });
 
   it('/unclassified/3 should return 404', async () => {
@@ -219,7 +219,7 @@ describe('/unclassified', () => {
                                    .expect(404);
 
     expect(fs.promises.readFile).toHaveBeenCalledWith(
-      './data/dataset.unclassified.arff', { encoding: 'utf8' });
+      './data/dataset.unclassified.filtered.arff', { encoding: 'utf8' });
   });
 
   describe('/uncassified with cache', () => {
@@ -236,7 +236,7 @@ describe('/unclassified', () => {
 
       expect(resp.body).toEqual({ length: 3 });
       expect(fs.promises.readFile).toHaveBeenCalledWith(
-        './data/dataset.unclassified.arff', { encoding: 'utf8' });
+        './data/dataset.unclassified.filtered.arff', { encoding: 'utf8' });
     });
 
     it('/unclassified/2 should return data row with cache', async () => {
