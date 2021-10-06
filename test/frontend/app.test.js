@@ -161,4 +161,22 @@ describe('app', () => {
 
   });
 
+  describe('search', () => {
+    it('should search for closest element and update cursor', async () => {
+      const renderer_mock = { render: jest.fn() },
+            app = App({ renderer: renderer_mock });
+
+      axios.get = jest.fn();
+      axios.get.mockResolvedValue({ data: { closest: 32 } });
+      app.set_cursor(52);
+
+      app.set_cursor = jest.fn();
+
+      await app.search({ x: 12, y: 34 });
+
+      expect(axios.get).toHaveBeenCalledWith('./classified/base/12/34/52');
+      expect(app.set_cursor).toHaveBeenCalledWith(32);
+    });
+  });
+
 });

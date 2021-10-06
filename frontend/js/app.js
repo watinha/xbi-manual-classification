@@ -26,7 +26,7 @@ const default_renderer = Renderer([
   Loader({
     url: URLS.CLASSIFIED,
     target: ELEMENTS.CLASSIFIED_COUNT,
-    mapping: (data) => data.length
+    mapping: (data) => cursor
   }),
   Loader({
     url: URLS.UNCLASSIFIED,
@@ -84,6 +84,11 @@ const App = ({ renderer=default_renderer, max=100000 }) => {
 
     save: () => {
       axios.post(URLS.CLASSIFIED);
+    },
+
+    search: async ({ x, y }) => {
+      const response = await axios.get(`${URLS.CLASSIFIED}/base/${x}/${y}/${cursor}`);
+      self.set_cursor(response.data.closest);
     }
   };
 
