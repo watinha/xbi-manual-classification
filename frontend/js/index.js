@@ -30,12 +30,7 @@ internal_input.addEventListener('keyup', (ev) => {
   if ([KEYS.DOWN, KEYS.RIGHT].indexOf(ev.keyCode) >= 0)
     app.next();
   if (KEYS.ENTER === ev.keyCode) {
-    const internal = parseInt(internal_input.value),
-          external = parseInt(external_input.value);
-    app.classify(app.get_cursor(), { internal, external });
-    app.next();
-    internal_input.value = '';
-    external_input.value = '';
+    external_input.focus();
   }
 });
 
@@ -67,4 +62,9 @@ screenshots_div.addEventListener('click', (ev) => {
 
 generate_button.addEventListener('click', () => {
   app.save();
+  localStorage.setItem('cursor', app.get_cursor());
 });
+
+let cursor = localStorage.getItem('cursor');
+if (cursor)
+  app.set_cursor(cursor);
