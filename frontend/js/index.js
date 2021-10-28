@@ -3,7 +3,8 @@ import App from './app.js';
 const ELEMENTS = {
         INTERNAL_INPUT: document.querySelector('#internal_classifier'),
         EXTERNAL_INPUT: document.querySelector('#external_classifier'),
-        SCREENSHOTS_DIV: document.querySelector('.screenshots')
+        SCREENSHOTS_DIV: document.querySelector('.screenshots'),
+        GENERATE_ARFF_BUTTON: document.querySelector('.menu button')
       },
       SELECTORS = {
         BASELINE_SCREENSHOT: '.screenshots > div > img:first-child'
@@ -19,7 +20,8 @@ const ELEMENTS = {
 const app = App({}),
       internal_input = ELEMENTS.INTERNAL_INPUT,
       external_input = ELEMENTS.EXTERNAL_INPUT,
-      screenshots_div = ELEMENTS.SCREENSHOTS_DIV;
+      screenshots_div = ELEMENTS.SCREENSHOTS_DIV,
+      generate_button = ELEMENTS.GENERATE_ARFF_BUTTON;
 
 internal_input.focus();
 internal_input.addEventListener('keyup', (ev) => {
@@ -27,6 +29,30 @@ internal_input.addEventListener('keyup', (ev) => {
     app.previous();
   if ([KEYS.DOWN, KEYS.RIGHT].indexOf(ev.keyCode) >= 0)
     app.next();
+  if (KEYS.ENTER === ev.keyCode) {
+    const internal = parseInt(internal_input.value),
+          external = parseInt(external_input.value);
+    app.classify(app.get_cursor(), { internal, external });
+    app.next();
+    internal_input.value = '';
+    external_input.value = '';
+  }
+});
+
+external_input.addEventListener('keyup', (ev) => {
+  if ([KEYS.UP, KEYS.LEFT].indexOf(ev.keyCode) >= 0)
+    app.previous();
+  if ([KEYS.DOWN, KEYS.RIGHT].indexOf(ev.keyCode) >= 0)
+    app.next();
+  if (KEYS.ENTER === ev.keyCode) {
+    const internal = parseInt(internal_input.value),
+          external = parseInt(external_input.value);
+    app.classify(app.get_cursor(), { internal, external });
+    app.next();
+    internal_input.focus();
+    internal_input.value = '';
+    external_input.value = '';
+  }
 });
 
 screenshots_div.addEventListener('click', (ev) => {
@@ -37,4 +63,8 @@ screenshots_div.addEventListener('click', (ev) => {
     app.search({ x, y });
     internal_input.focus();
   }
+});
+
+generate_button.addEventListener('click', () => {
+  app.save();
 });
