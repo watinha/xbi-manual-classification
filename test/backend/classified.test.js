@@ -7,7 +7,8 @@ function get_rows (n) {
   const rows = [
     '"http://192.168.0.13:8080/59/index.html",1281,"DIV",1,131,"iOS 14.5 - Safari -- iOS 14.5 - iPhone 12","Android null - Chrome -- Android API28 - Pixel","null","null",3,3.5,"null","null",168,15,11953,11816,31,29,198,178,0,0,11657,11528,0,0,1170,1440,390,412,"/body[2]/div[8]/div[1]/div[8]/div[3]/div[16]","/body[2]/div[8]/div[1]/div[8]/div[3]/div[16]","/body[2]/div[8]/div[1]/div[8]/div[3]/div[16]",0,15,217,11953,11771,15,198,11999,11816,0,0,"Open Sans","Open Sans",0,1',
     '"http://192.168.0.13:8080/59/index.html",739,"DIV",1,140,"iOS 14.5 - Safari -- iOS 14.5 - iPhone 12","Android null - Chrome -- Android API28 - Pixel","null","null",3,3.5,"null","null",15,15,6210,6122,18,17,260,282,15,15,6210,6122,0,0,1170,1440,390,412,"/body[2]/div[8]/div[1]/div[4]/div[1]/ul[1]/li[30]/div[2]/div[1]","/body[2]/div[8]/div[1]/div[4]/div[1]/ul[1]/li[30]/div[2]/div[1]","/body[2]/div[8]/div[1]/div[4]/div[1]/ul[1]/li[30]/div[2]/div[1]",0,285,307,6210,6122,15,15,6228,6139,2,2,"Open Sans","Open Sans",1,0',
-    '"http://192.168.0.13:8080/26/index.html",386,"DIV",1,61,"iOS 14.5 - Safari -- iOS 14.5 - iPhone 12","iOS 14.5 - Safari -- iOS 14.5 - iPhone 12 mini","null","null",3,3,"null","null",48,48,30820,35202,234,234,334,319,48,48,30820,35202,0,0,1170,1125,390,375,"/body[2]/main[5]/ul[6]/li[20]/div[1]","/body[2]/main[5]/ul[6]/li[20]/div[1]","/body[2]/main[5]/ul[6]/li[20]/div[1]",0,48,48,29986,34138,48,48,31123,35505,2,2,"-webkit-standard","-webkit-standard",0,0'
+    '"http://192.168.0.13:8080/26/index.html",386,"DIV",1,61,"iOS 14.5 - Safari -- iOS 14.5 - iPhone 12","iOS 14.5 - Safari -- iOS 14.5 - iPhone 12 max pro","null","null",3,3,"null","null",48,48,30820,35202,234,234,334,319,48,48,30820,35202,0,0,1170,1125,390,375,"/body[2]/main[5]/ul[6]/li[20]/div[1]","/body[2]/main[5]/ul[6]/li[20]/div[1]","/body[2]/main[5]/ul[6]/li[20]/div[1]",0,48,48,29986,34138,48,48,31123,35505,2,2,"-webkit-standard","-webkit-standard",0,0',
+    '"http://192.168.0.13:8080/26/index.html",386,"DIV",1,61,"iOS 14.5 - Safari -- iOS 14.5 - iPhone 12","iOS 14.5 - Safari -- iOS 14.5 - iPhone 12 mini","null","null",3,3,"null","null",48,48,60000,35202,234,234,334,319,48,48,30820,35202,0,0,1170,1125,390,375,"/body[2]/main[5]/ul[6]/li[20]/div[1]","/body[2]/main[5]/ul[6]/li[20]/div[1]","/body[2]/main[5]/ul[6]/li[20]/div[1]",0,48,48,29986,34138,48,48,31123,35505,2,2,"-webkit-standard","-webkit-standard",0,0'
   ];
 
   let data_raw = rows.filter((cur, index) => index < n),
@@ -195,8 +196,14 @@ describe('/classified', () => {
     let rows = null;
 
     beforeAll(async () => {
-      const [attributes, data, arff] = get_rows(3);
-
+      const [attributes, data, arff] = get_rows(4);
+      /*
+       *  ID URL    X     Y PLATFORM
+       * [0] url1 168 11953 target1
+       * [1] url1  15  6210 target1
+       * [2] url2  38 30820 target1
+       * [3] url2  38 60000 target2
+       */
       rows = data;
 
       fs.promises.readFile = jest.fn();
@@ -270,6 +277,22 @@ describe('/classified', () => {
                                    .expect('Content-type', /json/);
 
       expect(resp.body).toEqual({ 'closest': 0 });
+    });
+
+    it('should search for closest element considering the same platform', async () => {
+      let resp = await request(app).get('/classified/base/168/10000/3')
+                                   .expect(200)
+                                   .expect('Content-type', /json/);
+
+      expect(resp.body).toEqual({ 'closest': 3 });
+    });
+
+    it('should search for another closest element considering the same platform', async () => {
+      let resp = await request(app).get('/classified/base/38/60000/2')
+                                   .expect(200)
+                                   .expect('Content-type', /json/);
+
+      expect(resp.body).toEqual({ 'closest': 2 });
     });
 
   });
