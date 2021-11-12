@@ -59,11 +59,13 @@ let classifier = (() => {
             id = parseInt(current_id);
       let current = cache['classified']['data'][id],
           url = current.URL,
+          platform = current.targetPlatform,
           closest = current,
           closest_id = cache['classified']['data'].indexOf(closest),
           first_element_id = (() => {
             for (let i = id - 1; i >= 0; i--) {
-              if (cache['classified']['data'][i].URL !== url)
+              if (cache['classified']['data'][i].URL !== url ||
+                  cache['classified']['data'][i].targetPlatform !== platform)
                 return i + 1;
             }
             return 0;
@@ -72,7 +74,7 @@ let classifier = (() => {
       for (let i = first_element_id; i < cache['classified']['data'].length; i++) {
         current = cache['classified']['data'][i];
 
-        if (current.URL !== url)
+        if (current.URL !== url || current.targetPlatform !== platform)
           return closest_id;
 
         if (distance(x, current.baseX, y, current.baseY) <
