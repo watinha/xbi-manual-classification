@@ -23,7 +23,7 @@ const render_complete_screenshot = (data) => {
       else
         platform_folder = 'pixel_xl';
 
-      website_folder = screenshot.substr(1, data.baseScreenshot.length - 5);
+      website_folder = screenshot.substr(1, screenshot.length - 5);
       return `${website_folder}results/${platform_folder}/complete.png`;
     }
   }
