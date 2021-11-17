@@ -33,4 +33,16 @@ router.get('/base/:position_x/:position_y/:current_id', (req, res) => {
   res.status(200).json({ closest: result });
 });
 
+router.get('/next/:current_id', (req, res) => {
+  const { current_id } = req.params,
+        result = dataset.next({ current_id });
+  res.status(200).json({ 'id': result });
+});
+
+router.get('/back/:current_id', (req, res) => {
+  const { current_id } = req.params,
+        result = dataset.back({ current_id });
+  res.status(200).json({ 'id': result });
+});
+
 export default router;

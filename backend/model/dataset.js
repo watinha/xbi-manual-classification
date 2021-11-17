@@ -86,6 +86,26 @@ let classifier = (() => {
       };
 
       return closest_id;
+    },
+
+    next: ({ current_id }) => {
+      const id = parseInt(current_id),
+            data = cache['classified']['data'],
+            url = data[id].URL;
+      let cur = id;
+      while (cur < data.length && data[cur].URL === url) cur++;
+      if (cur === data.length) return id;
+      return cur;
+    },
+
+    back: ({ current_id }) => {
+      const id = parseInt(current_id),
+            data = cache['classified']['data'],
+            url = data[id].URL;
+      let cur = id;
+      while (cur >= 0 && data[cur].URL === url) cur--;
+      if (cur === -1) return id;
+      return cur;
     }
 
   };

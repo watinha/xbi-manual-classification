@@ -7,6 +7,8 @@ const ELEMENTS = {
         GENERATE_ARFF_BUTTON: document.querySelector('.menu button'),
         BASE_CURSOR_DIV: document.querySelector('.cursor .base'),
         TARGET_CURSOR_DIV: document.querySelector('.cursor .target'),
+        WEBSITE_BACK: document.querySelector('button.back'),
+        WEBSITE_NEXT: document.querySelector('button.next'),
       },
       SELECTORS = {
         BASELINE_SCREENSHOT: '.screenshots > div > img:first-child'
@@ -25,7 +27,9 @@ const app = App({}),
       screenshots_div = ELEMENTS.SCREENSHOTS_DIV,
       generate_button = ELEMENTS.GENERATE_ARFF_BUTTON,
       base_cursor_div = ELEMENTS.BASE_CURSOR_DIV,
-      target_cursor_div = ELEMENTS.TARGET_CURSOR_DIV;
+      target_cursor_div = ELEMENTS.TARGET_CURSOR_DIV,
+      website_back = ELEMENTS.WEBSITE_BACK,
+      website_next = ELEMENTS.WEBSITE_NEXT;
 
 internal_input.focus();
 setInterval(() => {
@@ -84,6 +88,14 @@ screenshots_div.addEventListener('click', (ev) => {
 generate_button.addEventListener('click', () => {
   app.save();
   localStorage.setItem('cursor', app.get_cursor());
+});
+
+website_back.addEventListener('click', () => {
+  app.back_website();
+});
+
+website_next.addEventListener('click', () => {
+  app.next_website();
 });
 
 let cursor = localStorage.getItem('cursor');

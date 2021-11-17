@@ -177,6 +177,94 @@ describe('app', () => {
       expect(axios.get).toHaveBeenCalledWith('./classified/base/12/34/52');
       expect(app.set_cursor).toHaveBeenCalledWith(32);
     });
+
+    it('should search for closest element and update cursor with different parameter', async () => {
+      const renderer_mock = { render: jest.fn() },
+            app = App({ renderer: renderer_mock });
+
+      axios.get = jest.fn();
+      axios.get.mockResolvedValue({ data: { closest: 13 } });
+      app.set_cursor(230);
+
+      app.set_cursor = jest.fn();
+
+      await app.search({ x: 56, y: 78 });
+
+      expect(axios.get).toHaveBeenCalledWith('./classified/base/56/78/230');
+      expect(app.set_cursor).toHaveBeenCalledWith(13);
+    });
+  });
+
+  describe('next_website', () => {
+
+    it('should go to next, sending request to server and updating cursor', async () => {
+      const renderer_mock = { render: jest.fn() },
+            app = App({ renderer: renderer_mock });
+
+      axios.get = jest.fn();
+      axios.get.mockResolvedValue({ data: { id: 56 } });
+      app.set_cursor(34);
+
+      app.set_cursor = jest.fn();
+
+      await app.next_website();
+
+      expect(axios.get).toHaveBeenCalledWith('./classified/next/34');
+      expect(app.set_cursor).toHaveBeenCalledWith(56);
+    });
+
+    it('should go to next, sending request to server and updating cursor again', async () => {
+      const renderer_mock = { render: jest.fn() },
+            app = App({ renderer: renderer_mock });
+
+      axios.get = jest.fn();
+      axios.get.mockResolvedValue({ data: { id: 13 } });
+      app.set_cursor(13);
+
+      app.set_cursor = jest.fn();
+
+      await app.next_website();
+
+      expect(axios.get).toHaveBeenCalledWith('./classified/next/13');
+      expect(app.set_cursor).toHaveBeenCalledWith(13);
+    });
+
+  });
+
+  describe('back_website', () => {
+
+    it('should go to back, sending request to server and updating cursor', async () => {
+      const renderer_mock = { render: jest.fn() },
+            app = App({ renderer: renderer_mock });
+
+      axios.get = jest.fn();
+      axios.get.mockResolvedValue({ data: { id: 56 } });
+      app.set_cursor(34);
+
+      app.set_cursor = jest.fn();
+
+      await app.back_website();
+
+      expect(axios.get).toHaveBeenCalledWith('./classified/back/34');
+      expect(app.set_cursor).toHaveBeenCalledWith(56);
+    });
+
+    it('should go to back, sending request to server and updating cursor again', async () => {
+      const renderer_mock = { render: jest.fn() },
+            app = App({ renderer: renderer_mock });
+
+      axios.get = jest.fn();
+      axios.get.mockResolvedValue({ data: { id: 13 } });
+      app.set_cursor(13);
+
+      app.set_cursor = jest.fn();
+
+      await app.back_website();
+
+      expect(axios.get).toHaveBeenCalledWith('./classified/back/13');
+      expect(app.set_cursor).toHaveBeenCalledWith(13);
+    });
+
   });
 
 });
