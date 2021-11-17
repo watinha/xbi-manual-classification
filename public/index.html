@@ -67,6 +67,9 @@
                 position: absolute;
                 margin: 0;
             }
+            .website_navigator {
+                display: flex;
+            }
         </style>
     </head>
     <body>
@@ -93,6 +96,11 @@
         </div>
 
         <div class="menu">
+            <fieldset style="none" class="website_navigator">
+                <legend>Website navigator</legend>
+                <button class="back">Back</button>
+                <button class="next">Next</button>
+            </fieldset>
             <fieldset id="xbi" style="none">
                 <legend>XBI Internal classifier</legend>
                 <label for="classifier">Classificação (1 ou 0):</label>

@@ -89,6 +89,16 @@ const App = ({ renderer=default_renderer, max=100000 }) => {
     search: async ({ x, y }) => {
       const response = await axios.get(`${URLS.CLASSIFIED}/base/${x}/${y}/${cursor}`);
       self.set_cursor(response.data.closest);
+    },
+
+    next_website: async () => {
+      const response = await axios.get(`${URLS.CLASSIFIED}/next/${cursor}`);
+      self.set_cursor(response.data.id);
+    },
+
+    back_website: async () => {
+      const response = await axios.get(`${URLS.CLASSIFIED}/back/${cursor}`);
+      self.set_cursor(response.data.id);
     }
   };
 

@@ -193,8 +193,6 @@ describe('/classified', () => {
 
   describe('search', () => {
 
-    let rows = null;
-
     beforeAll(async () => {
       const [attributes, data, arff] = get_rows(4);
       /*
@@ -204,8 +202,6 @@ describe('/classified', () => {
        * [2] url2  38 30820 target1
        * [3] url2  38 60000 target2
        */
-      rows = data;
-
       fs.promises.readFile = jest.fn();
       fs.promises.readFile.mockResolvedValue(arff);
 
@@ -375,6 +371,59 @@ describe('/classified', () => {
       expect(resp.body).toEqual({ message: 'Arff file generated!!!' });
       expect(fs.promises.writeFile).toHaveBeenCalledWith(
         './data/dataset.classified.arff', new_arff);
+    });
+
+  });
+
+  describe('next/back', () => {
+
+    beforeAll(async () => {
+      const [attributes, data, arff] = get_rows(4);
+      /*
+       *  ID URL    X     Y PLATFORM
+       * [0] url1 168 11953 target1
+       * [1] url1  15  6210 target1
+       * [2] url2  38 30820 target1
+       * [3] url2  38 60000 target2
+       */
+      fs.promises.readFile = jest.fn();
+      fs.promises.readFile.mockResolvedValue(arff);
+
+      const resp = await request(app).get('/classified?uncached=1')
+                                     .expect('Content-type', /json/)
+                                     .expect(200);
+    });
+
+    it('should go to next website in the dataset', async () => {
+      let resp = await request(app).get('/classified/next/0')
+                                   .expect(200)
+                                   .expect('Content-type', /json/);
+
+      expect(resp.body).toEqual({ 'id': 2 });
+    });
+
+    it('should remain in the same website in the dataset', async () => {
+      let resp = await request(app).get('/classified/next/3')
+                                   .expect(200)
+                                   .expect('Content-type', /json/);
+
+      expect(resp.body).toEqual({ 'id': 3 });
+    });
+
+    it('should go to previous website in the dataset', async () => {
+      let resp = await request(app).get('/classified/back/3')
+                                   .expect(200)
+                                   .expect('Content-type', /json/);
+
+      expect(resp.body).toEqual({ 'id': 1 });
+    });
+
+    it('should remain in the same website in the dataset', async () => {
+      let resp = await request(app).get('/classified/back/0')
+                                   .expect(200)
+                                   .expect('Content-type', /json/);
+
+      expect(resp.body).toEqual({ 'id': 0 });
     });
 
   });
