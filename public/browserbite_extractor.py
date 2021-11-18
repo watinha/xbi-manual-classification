@@ -57,8 +57,43 @@ dataset['attributes'] = dataset['attributes'] + [
     ('diff_bin44', 'NUMERIC'),
     ('diff_bin45', 'NUMERIC'),
     ('sdd', 'NUMERIC'),
-    ('ncc', 'NUMERIC')
+    ('ncc', 'NUMERIC'),
+    ('base_centroid_x', 'NUMERIC'),
+    ('base_centroid_y', 'NUMERIC'),
+    ('base_orientation', 'NUMERIC'),
+    ('target_centroid_x', 'NUMERIC'),
+    ('target_centroid_y', 'NUMERIC'),
+    ('target_orientation', 'NUMERIC')
 ]
+
+def raw_moment (i, j, image):
+    Mij = 0
+    (width, height) = image.size
+    for x in range(width):
+        for y in range(height):
+            i_xy = image.getpixel((x,y))
+            Mij += (x ** i) * (y ** i) * i_xy
+    return Mij
+
+def matching_metrics (image):
+    M_10 = raw_moment(1, 0, image)
+    M_01 = raw_moment(0, 1, image)
+    M_00 = raw_moment(0, 0, image)
+    M_11 = raw_moment(1, 1, image)
+    M_20 = raw_moment(2, 0, image)
+    M_02 = raw_moment(0, 2, image)
+
+    centroid_x = M_10 / M_00
+    centroid_y = M_01 / M_00
+
+    first_moment = (M_11 / M_00) - (centroid_x * centroid_y)
+    second_moment_x = (M_20 / M_00) - (centroid_x ** 2)
+    second_moment_y = (M_02 / M_00) - (centroid_y ** 2)
+
+    orientation = (1/2) * math.atan((2 * first_moment) / (second_moment_x / second_moment_y))
+
+    return (centroid_x, centroid_y, orientation)
+
 
 for row in dataset['data']:
     base_hist = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -110,6 +145,9 @@ for row in dataset['data']:
             for j in range(dim):
                 diff.append(diff_img.getpixel((i, j)))
 
-    row += base_hist + target_hist + diff + [sdd, ncc]
+        (base_centroid_x, base_centroid_y, base_orientation) = matching_metrics(base_img)
+        (target_centroid_x, target_centroid_y, target_orientation) = matching_metrics(target_img)
+
+    row += base_hist + target_hist + diff + [sdd, ncc, base_centroid_x, base_centroid_y, base_orientation, target_centroid_x, target_centroid_y, target_orientation]
 
 arff.dump(dataset, open(arff_file.replace('.arff', '.hist.arff'), 'w'))
