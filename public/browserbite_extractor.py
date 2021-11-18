@@ -104,8 +104,8 @@ for row in dataset['data']:
     target_path = row[attributes.index('targetScreenshot')]
 
     if row[attributes.index('childsNumber')] == 0.0 and target_path != 'null' and base_path != 'null':
-        base_img = Image.open('%s' % (base_path)).convert('L')
-        target_img = Image.open('.%s' % (target_path)).convert('L')
+        base_img = Image.open('./public/%s' % (base_path)).convert('L')
+        target_img = Image.open('./public/%s' % (target_path)).convert('L')
         base_hist = np.histogram(base_img.histogram())[0].tolist()
         target_hist = np.histogram(target_img.histogram())[0].tolist()
 
