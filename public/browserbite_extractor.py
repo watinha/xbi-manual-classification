@@ -99,6 +99,14 @@ for row in dataset['data']:
     base_hist = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     target_hist = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     diff = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    sdd = -1
+    ncc = -1
+    base_centroid_x = -1
+    base_centroid_y = -1
+    base_orientation = -1
+    target_centroid_x = -1
+    target_centroid_y = -1
+    target_orientation = -1
 
     base_path = row[attributes.index('baseScreenshot')]
     target_path = row[attributes.index('targetScreenshot')]
