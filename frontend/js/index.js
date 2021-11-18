@@ -4,7 +4,7 @@ const ELEMENTS = {
         INTERNAL_INPUT: document.querySelector('#internal_classifier'),
         EXTERNAL_INPUT: document.querySelector('#external_classifier'),
         SCREENSHOTS_DIV: document.querySelector('.screenshots'),
-        GENERATE_ARFF_BUTTON: document.querySelector('.menu button'),
+        GENERATE_ARFF_BUTTON: document.querySelector('button.generate'),
         BASE_CURSOR_DIV: document.querySelector('.cursor .base'),
         TARGET_CURSOR_DIV: document.querySelector('.cursor .target'),
         WEBSITE_BACK: document.querySelector('button.back'),
