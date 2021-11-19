@@ -8,7 +8,6 @@ if (len(sys.argv) < 2):
 
 arff_file = sys.argv[1]
 dataset = arff.load(open(arff_file))
-attributes = [attribute[0] for attribute in dataset['attributes']]
 
 dataset['attributes'] = dataset['attributes'] + [
     ('base_bin1', 'NUMERIC'),
@@ -63,8 +62,11 @@ dataset['attributes'] = dataset['attributes'] + [
     ('base_orientation', 'NUMERIC'),
     ('target_centroid_x', 'NUMERIC'),
     ('target_centroid_y', 'NUMERIC'),
-    ('target_orientation', 'NUMERIC')
+    ('target_orientation', 'NUMERIC'),
+    ('missmatch', 'NUMERIC')
 ]
+
+attributes = [attribute[0] for attribute in dataset['attributes']]
 
 def raw_moment (i, j, image):
     Mij = 0
@@ -72,7 +74,7 @@ def raw_moment (i, j, image):
     for x in range(width):
         for y in range(height):
             i_xy = image.getpixel((x,y))
-            Mij += (x ** i) * (y ** i) * i_xy
+            Mij += (x ** i) * (y ** j) * i_xy
     return Mij
 
 def matching_metrics (image):
@@ -90,7 +92,10 @@ def matching_metrics (image):
     second_moment_x = (M_20 / M_00) - (centroid_x ** 2)
     second_moment_y = (M_02 / M_00) - (centroid_y ** 2)
 
-    orientation = (1/2) * math.atan((2 * first_moment) / (second_moment_x / second_moment_y))
+    if second_moment_x != second_moment_y:
+        orientation = (1/2) * math.atan((2 * first_moment) / (second_moment_x - second_moment_y))
+    else:
+        orientation = 0
 
     return (centroid_x, centroid_y, orientation)
 
@@ -110,8 +115,10 @@ for row in dataset['data']:
 
     base_path = row[attributes.index('baseScreenshot')]
     target_path = row[attributes.index('targetScreenshot')]
+    target_platform = row[attributes.index('basePlatform')]
+    base_platform = row[attributes.index('targetPlatform')]
 
-    if row[attributes.index('childsNumber')] == 0.0 and target_path != 'null' and base_path != 'null':
+    if row[attributes.index('childsNumber')] == 0.0 and base_platform != 'null' and target_platform != 'null':
         base_img = Image.open('./public/%s' % (base_path)).convert('L')
         target_img = Image.open('./public/%s' % (target_path)).convert('L')
         base_hist = np.histogram(base_img.histogram())[0].tolist()
@@ -133,7 +140,7 @@ for row in dataset['data']:
                 if pixel_i1 != pixel_i2:
                     diff_img.putpixel((i,j), (abs(pixel_i1 - pixel_i2), 0, 0, 255))
                 diff = pixel_i1 - pixel_i2
-                sdd = sdd + (diff * diff)
+                sdd = sdd + ((diff / 255) ** 2)
 
                 pixel_i1 = pixel_i1 + 1
                 pixel_i2 = pixel_i2 + 1
@@ -145,6 +152,7 @@ for row in dataset['data']:
             ncc = 1
         else:
             ncc = ncc / math.sqrt(ncc_div1 * ncc_div2)
+        sdd = sdd / (width * height)
 
         dim = 5
         diff_img = diff_img.resize((dim, dim)).convert('L')
@@ -157,5 +165,41 @@ for row in dataset['data']:
         (target_centroid_x, target_centroid_y, target_orientation) = matching_metrics(target_img)
 
     row += base_hist + target_hist + diff + [sdd, ncc, base_centroid_x, base_centroid_y, base_orientation, target_centroid_x, target_centroid_y, target_orientation]
+
+threshold1 = 1
+threshold2 = 0.1
+
+url_platform_map = {}
+for row in dataset['data']:
+    if row[attributes.index('childsNumber')] == 0.0:
+        if row[attributes.index('targetPlatform')] != 'null' and row[attributes.index('basePlatform')] != 'null':
+            target_platform = row[attributes.index('targetPlatform')]
+        key = ('%s - %s' % (row[attributes.index('URL')], target_platform))
+        base_centroid_x = row[attributes.index('base_centroid_x')]
+        base_centroid_y = row[attributes.index('base_centroid_y')]
+        base_orientation = row[attributes.index('base_orientation')]
+        target_centroid_x = row[attributes.index('target_centroid_x')]
+        target_centroid_y = row[attributes.index('target_centroid_y')]
+        target_orientation = row[attributes.index('target_orientation')]
+        sdd = row[attributes.index('sdd')]
+
+        is_match = (abs(base_centroid_x - target_centroid_x) < threshold1 and abs(base_centroid_y - target_centroid_y) < threshold1 and abs(base_orientation - target_orientation) < threshold1) or sdd < threshold2
+
+        if (key not in url_platform_map):
+            url_platform_map[key] = { 'total': 1, 'matching': 1 if is_match else 0 }
+        else:
+            url_platform_map[key]['total'] = url_platform_map[key]['total'] + 1
+            if is_match and (row[attributes.index('targetPlatform')] != 'null' and row[attributes.index('basePlatform')] != 'null'):
+                url_platform_map[key]['matching'] = url_platform_map[key]['matching'] + 1
+
+
+for row in dataset['data']:
+    missmatch = -1
+    if row[attributes.index('childsNumber')] == 0.0:
+        if row[attributes.index('targetPlatform')] != 'null' and row[attributes.index('basePlatform')] != 'null':
+            target_platform = row[attributes.index('targetPlatform')]
+        key = ('%s - %s' % (row[attributes.index('URL')], target_platform))
+        missmatch = url_platform_map[key]['matching'] / url_platform_map[key]['total']
+    row += [missmatch]
 
 arff.dump(dataset, open(arff_file.replace('.arff', '.hist.arff'), 'w'))
