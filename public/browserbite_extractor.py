@@ -74,7 +74,7 @@ def raw_moment (i, j, image):
     for x in range(width):
         for y in range(height):
             i_xy = image.getpixel((x,y))
-            Mij += (x ** i) * (y ** j) * i_xy
+            Mij += ((x+1) ** i) * ((y+1) ** j) * (i_xy+1) # to prevent 0
     return Mij
 
 def matching_metrics (image):
@@ -118,11 +118,15 @@ for row in dataset['data']:
     target_platform = row[attributes.index('basePlatform')]
     base_platform = row[attributes.index('targetPlatform')]
 
-    if row[attributes.index('childsNumber')] == 0.0 and base_platform != 'null' and target_platform != 'null':
-        base_img = Image.open('./public/%s' % (base_path)).convert('L')
-        target_img = Image.open('./public/%s' % (target_path)).convert('L')
-        base_hist = np.histogram(base_img.histogram())[0].tolist()
-        target_hist = np.histogram(target_img.histogram())[0].tolist()
+    if row[attributes.index('childsNumber')] == 0.0 and base_platform != 'null' and target_platform != 'null' and not base_path.endswith('/null') and not target_path.endswith('/null'):
+        try:
+            base_img = Image.open('./public/%s' % (base_path)).convert('L')
+            target_img = Image.open('./public/%s' % (target_path)).convert('L')
+            base_hist = np.histogram(base_img.histogram())[0].tolist()
+            target_hist = np.histogram(target_img.histogram())[0].tolist()
+        except:
+            print(row)
+            raise Exception('error probably in image reading task.')
 
         width = min(base_img.size[0], target_img.size[0])
         height = min(base_img.size[1], target_img.size[1])
