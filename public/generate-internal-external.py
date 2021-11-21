@@ -7,6 +7,7 @@ if (len(sys.argv) < 2):
 arff_file = sys.argv[1]
 dataset = arff.load(open(arff_file))
 attributes = [attribute[0] for attribute in dataset['attributes']]
+max_psnr = -1
 
 filtered = []
 structure_xbis = []
@@ -14,7 +15,11 @@ for row in dataset['data']:
     if row[attributes.index('targetPlatform')] == 'null' or row[attributes.index('basePlatform')] == 'null':
         structure_xbis.append(row)
     else:
+        psnr = row[attributes.index('psnr')]
+        if psnr != float('inf') and psnr > max_psnr:
+            max_psnr = psnr
         filtered.append(row)
+
 
 print('Structure XBIs: %d' % (len(structure_xbis)))
 
@@ -29,6 +34,10 @@ for row in filtered:
 
     if (row[attributes.index('internal')] == '1'): count_internal += 1
     if (row[attributes.index('external')] == '1'): count_external += 1
+    psnr = row[attributes.index('psnr')]
+    if psnr == float('inf'):
+        row[attributes.index('psnr')] = max_psnr
+        print('changing psnr from inf -> %d' % (max_psnr))
 
     if row[attributes.index('childsNumber')] == 0.0 and base_platform != 'null' and target_platform != 'null' and not base_path.endswith('/null') and not target_path.endswith('/null'):
         internal.append(row)
