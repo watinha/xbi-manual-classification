@@ -27,6 +27,13 @@ for row in dataset['data']:
             max_mse = mse
         filtered.append(row)
 
+    if row[attributes.index('internal')] is None:
+        print('updating internal from None -> 0: %s' % (row))
+        row[attributes.index('internal')] = '0'
+    if row[attributes.index('external')] is None:
+        print('updating external from None -> 0: %s' % (row))
+        row[attributes.index('external')] = '0'
+
 
 print('Structure XBIs: %d' % (len(structure_xbis)))
 
