@@ -9,3 +9,17 @@ LOG:
 - animated floating menus
 - viewport for an specific device issues
 - errors while capturing screenshots
+
+TO CLASSIFY:
+- run the frontend-dev npm script
+- run the backend npm start script
+
+TO GENERATE DATASETS:
+- unzip collector files in the public directory
+- identify all arff files in an arff txt file
+- run scripts/generate_arff
+- run scripts/map_elements_outside
+- run scripts/browserbite_extractor
+- run scripts/image_extractor
+- run scripts/generate_internal_external
+- all arff files will be generated in the data folder
